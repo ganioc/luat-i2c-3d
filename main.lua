@@ -16,6 +16,7 @@ require "pins"
 ril.request("AT*EXINFO?")
 rtos.sleep(3000)
 
+local rtc_i2c_handle = 2
 local pcf8563 = require("pcf8563")
 
 
@@ -47,8 +48,8 @@ sys.taskInit(function()
 
 
     sys.wait(1000)
-    -- pcf8563.setup(rtc_i2c_handle)
-    -- pcf8563.enableAlarm(rtc_i2c_handle, 3)
+    pcf8563.setup(2)
+    pcf8563.enableAlarm(rtc_i2c_handle, 3)
 
 
     local handle = dl.open("/lua/user.lib", "user_main")
@@ -57,6 +58,7 @@ sys.taskInit(function()
         while true do
             user.helloworld()
             sys.wait(1000)
+            pcf8563.dumpReg(rtc_i2c_handle)
         end
     end
 end)
