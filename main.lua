@@ -48,17 +48,19 @@ sys.taskInit(function()
 
 
     sys.wait(1000)
-    pcf8563.setup(2)
-    pcf8563.enableAlarm(rtc_i2c_handle, 3)
+    -- pcf8563.setup(2)
+    -- pcf8563.enableAlarm(rtc_i2c_handle, 3)
 
 
     local handle = dl.open("/lua/user.lib", "user_main")
     if handle then
         -- 添加测试demo
+        user.setup_I2C(2)
+        
         while true do
             user.helloworld()
             sys.wait(1000)
-            pcf8563.dumpReg(rtc_i2c_handle)
+            -- pcf8563.dumpReg(rtc_i2c_handle)
         end
     end
 end)
