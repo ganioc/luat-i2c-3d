@@ -43,8 +43,8 @@ sys.taskInit(function()
     sys.wait(1000)
     print("---------------------")
     -- enable RTC
-    pmd.ldoset(2, pmd.LDO_VMMC)
-    setOutputFnc = pins.setup(pio.P0_27, 1)
+    -- pmd.ldoset(2, pmd.LDO_VMMC)
+    -- setOutputFnc = pins.setup(pio.P0_27, 1)
 
 
     sys.wait(1000)
@@ -56,11 +56,12 @@ sys.taskInit(function()
     if handle then
         -- 添加测试demo
         user.setup_I2C(2)
-        
+
         while true do
             user.helloworld()
             sys.wait(1000)
             -- pcf8563.dumpReg(rtc_i2c_handle)
+            user.read_LSM6DSR_WHOAMI()
         end
     end
 end)
