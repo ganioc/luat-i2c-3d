@@ -2,3 +2,5 @@
 ndk/build
 *.o
 *.d
+.luatide/
+
