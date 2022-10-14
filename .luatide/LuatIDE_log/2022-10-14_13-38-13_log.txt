@@ -1,0 +1,106 @@
+2022-10-14 13:38:21.4824 AT+LUATCONSOLE=1
+2022-10-14 13:38:21.4854 
+2022-10-14 13:38:21.4884 ATI
+2022-10-14 13:38:21.4894 
+2022-10-14 13:38:21.4904 LuatOS-Air_V4017_RDA8910_RFTNF_0x140000
+2022-10-14 13:38:21.4934 
+2022-10-14 13:38:21.4944 OK
+2022-10-14 13:38:21.4964 AT+LUACHECKSUM=c5d95a50d590d366895acee66e5c6a57
+2022-10-14 13:38:21.4984 
+2022-10-14 13:38:21.4984 +LUACHECKSUM: 0
+2022-10-14 13:38:21.4984 
+2022-10-14 13:38:21.4994 OK
+2022-10-14 13:38:21.6969 > ndk Go go :hello world!
+2022-10-14 13:38:22.7223 ndk Go go :hello world!
+2022-10-14 13:38:23.7221 ndk Go go :hello world!
+2022-10-14 13:38:24.7240 ndk Go go :hello world!
+2022-10-14 13:38:25.7246 ndk Go go :hello world!
+2022-10-14 13:38:26.7266 ndk Go go :hello world!
+2022-10-14 13:38:27.7271 ndk Go go :hello world!
+2022-10-14 13:38:28.3828 AT+RESET
+2022-10-14 13:38:28.3838 
+2022-10-14 13:38:28.3838 OK
+2022-10-14 13:38:31.8944 AT+LUATCONSOLE=1
+2022-10-14 13:38:31.8984 
+2022-10-14 13:38:35.3563 
+2022-10-14 13:38:35.3563 +CPIN: READY
+2022-10-14 13:38:35.3633 
+2022-10-14 13:38:35.3643 ^CARDMODE: 2
+2022-10-14 13:38:39.0797 > [I]-[poweron reason:] 3 DL_TEST 1.0.0 2.4.3 LuatOS-Air_V4017_RDA8910_RFTNF_0x140000
+2022-10-14 13:38:39.0836 [I]-[core build time] Sep 20 2022 15:58:09
+2022-10-14 13:38:39.0896 [I]-[ril.proatc] RDY
+2022-10-14 13:38:39.0916 [I]-[ril.proatc] +CPIN: READY
+2022-10-14 13:38:39.0936 [I]-[ril.defurc] +CPIN: READY
+2022-10-14 13:38:39.0956 [I]-[ril.proatc] ^CARDMODE: 2
+2022-10-14 13:38:39.0996 [I]-[ril.defurc] ^CARDMODE: 2
+2022-10-14 13:38:39.1036 
+2022-10-14 13:38:39.1066 SMS READY
+2022-10-14 13:38:39.1076 [I]-[ril.sendat] ATE0
+2022-10-14 13:38:39.1246 [I]-[ril.proatc] SMS READY
+2022-10-14 13:38:39.1436 [I]-[ril.defurc] SMS READY
+2022-10-14 13:38:39.1826 [I]-[ril.proatc] ATE0
+2022-10-14 13:38:39.1826 [I]-[ril.defurc] ATE0
+2022-10-14 13:38:39.1846 [I]-[ril.proatc] OK
+2022-10-14 13:38:39.1866 [I]-[ril.defrsp] ATE0 true OK nil
+2022-10-14 13:38:39.1886 [I]-[ril.sendat] AT+CMEE=0
+2022-10-14 13:38:39.2116 [I]-[ril.proatc] OK
+2022-10-14 13:38:39.2141 [I]-[ril.defrsp] AT+CMEE=0 true OK nil
+2022-10-14 13:38:39.2156 [I]-[ril.sendat] AT*EXINFO?
+2022-10-14 13:38:39.2396 [I]-[ril.proatc] *EXINFO:poweron=3
+2022-10-14 13:38:39.2406 [I]-[ril.defurc] *EXINFO:poweron=3
+2022-10-14 13:38:39.2416 [I]-[ril.proatc] OK
+2022-10-14 13:38:39.2436 [I]-[ril.defrsp] AT*EXINFO? true OK nil
+2022-10-14 13:38:39.2456 [I]-[ril.sendat] AT+WISN?
+2022-10-14 13:38:39.2699 [I]-[ril.proatc] GLC02940594178A9
+2022-10-14 13:38:39.2720 [I]-[ril.proatc] OK
+2022-10-14 13:38:39.2739 [I]-[ril.sendat] AT+CGSN
+2022-10-14 13:38:39.2974 [I]-[ril.proatc] 866250065181376
+2022-10-14 13:38:39.2994 [I]-[ril.proatc] OK
+2022-10-14 13:38:39.3014 [I]-[ril.sendat] AT+MUID?
+2022-10-14 13:38:39.3253 [I]-[ril.proatc] +MUID: 20220715114747A464802A3824032962
+2022-10-14 13:38:39.3263 [I]-[ril.proatc] OK
+2022-10-14 13:38:39.3293 [I]-[ril.sendat] AT*EXINFO?
+2022-10-14 13:38:39.3536 [I]-[ril.proatc] *EXINFO:poweron=3
+2022-10-14 13:38:39.3557 [I]-[ril.defurc] *EXINFO:poweron=3
+2022-10-14 13:38:39.3566 [I]-[ril.proatc] OK
+2022-10-14 13:38:39.3576 [I]-[ril.defrsp] AT*EXINFO? true OK nil
+2022-10-14 13:38:39.3596 [I]-[ril.sendat] AT+CGMM
+2022-10-14 13:38:39.3834 [I]-[ril.proatc] +CGMM: "Air724UG"
+2022-10-14 13:38:39.3854 [I]-[ril.proatc] OK
+2022-10-14 13:38:40.0789 ---------------------
+2022-10-14 13:38:41.2253 ndk Go go :hello world!
+2022-10-14 13:38:42.2281 ndk Go go :hello world!
+2022-10-14 13:38:43.2275 ndk Go go :hello world!
+2022-10-14 13:38:44.2282 ndk Go go :hello world!
+2022-10-14 13:38:45.2326 ndk Go go :hello world!
+2022-10-14 13:38:46.2332 ndk Go go :hello world!
+2022-10-14 13:38:47.2325 ndk Go go :hello world!
+2022-10-14 13:38:48.2330 ndk Go go :hello world!
+2022-10-14 13:38:49.2346 ndk Go go :hello world!
+2022-10-14 13:38:50.2350 ndk Go go :hello world!
+2022-10-14 13:38:51.2355 ndk Go go :hello world!
+2022-10-14 13:38:52.2381 ndk Go go :hello world!
+2022-10-14 13:38:53.2388 ndk Go go :hello world!
+2022-10-14 13:38:54.2389 ndk Go go :hello world!
+2022-10-14 13:38:55.2443 ndk Go go :hello world!
+2022-10-14 13:38:56.2435 ndk Go go :hello world!
+2022-10-14 13:38:57.2433 ndk Go go :hello world!
+2022-10-14 13:38:58.2453 ndk Go go :hello world!
+2022-10-14 13:38:59.2453 ndk Go go :hello world!
+2022-10-14 13:39:00.2475 ndk Go go :hello world!
+2022-10-14 13:39:01.2491 ndk Go go :hello world!
+2022-10-14 13:39:02.2505 ndk Go go :hello world!
+2022-10-14 13:39:03.2521 ndk Go go :hello world!
+2022-10-14 13:39:04.2524 ndk Go go :hello world!
+2022-10-14 13:39:05.2537 ndk Go go :hello world!
+2022-10-14 13:39:06.2551 ndk Go go :hello world!
+2022-10-14 13:39:07.2559 ndk Go go :hello world!
+2022-10-14 13:39:08.2566 ndk Go go :hello world!
+2022-10-14 13:39:09.2573 ndk Go go :hello world!
+2022-10-14 13:39:10.2594 ndk Go go :hello world!
+2022-10-14 13:39:11.2604 ndk Go go :hello world!
+2022-10-14 13:39:12.2611 ndk Go go :hello world!
+2022-10-14 13:39:13.2622 ndk Go go :hello world!
+2022-10-14 13:39:14.2643 ndk Go go :hello world!
+2022-10-14 13:39:15.2659 ndk Go go :hello world!
+2022-10-14 13:39:16.2665 ndk Go go :hello world!
