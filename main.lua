@@ -41,6 +41,9 @@ sys.taskInit(function()
     
     sys.wait(1000)
     print("---------------------")
+    -- enable RTC
+    pmd.ldoset(2, pmd.LDO_VMMC)
+    setOutputFnc = pins.setup(pio.P0_27, 1)
 
 
     sys.wait(1000)
