@@ -35,6 +35,8 @@ int Disable_G(void *L);
 int Get_X_AxesRaw(void *L);
 int Get_G_AxesRaw(void *L);
 
+int LSM6DSR_activity_begin(void *L);
+
 
 #endif
 

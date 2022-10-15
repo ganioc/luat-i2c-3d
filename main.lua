@@ -57,22 +57,24 @@ sys.taskInit(function()
         -- 添加测试demo
         user.setup_I2C(2)
 
-        local rtn = user.LSM6DSR_begin();
-        print("begin - rtn", rtn)
-        rtn = user.LSM6DSR_enable_X();
-        print("enable_X - rtn", rtn)
-        rtn = user.LSM6DSR_enable_G();
-        print("enable_G - rtn", rtn)
+        -- local rtn = user.LSM6DSR_begin();
+        -- print("begin - rtn", rtn)
+        -- rtn = user.LSM6DSR_enable_X();
+        -- print("enable_X - rtn", rtn)
+        -- rtn = user.LSM6DSR_enable_G();
+        -- print("enable_G - rtn", rtn)
+
+        user.LSM6DSR_activity_begin();
 
         while true do
             -- user.helloworld()
             sys.wait(100)
             -- pcf8563.dumpReg(rtc_i2c_handle)
             -- user.read_LSM6DSR_WHOAMI()
-            local num1,num2,num3 = user.Get_X_AxesRaw();
-            print("X axes: ", num1, num2,num3)
-            local gnum1,gnum2,gnum3 = user.Get_G_AxesRaw();
-            print("G axes: ", gnum1, gnum2,gnum3)
+            -- local num1,num2,num3 = user.Get_X_AxesRaw();
+            -- print("X axes: ", num1, num2,num3)
+            -- local gnum1,gnum2,gnum3 = user.Get_G_AxesRaw();
+            -- print("G axes: ", gnum1, gnum2,gnum3)
         end
     end
 end)

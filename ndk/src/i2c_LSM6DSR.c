@@ -83,6 +83,50 @@ int read_LSM6DSR_WHOAMI(void *L)
     return 0;
 }
 /**
+ * @brief  Software reset. Restore the default values in user registers.[set]
+ *
+ * @param  ctx    Read / write interface definitions.(ptr)
+ * @param  val    Change the values of sw_reset in reg CTRL3_C
+ * @retval        Interface status (MANDATORY: return 0 -> no Error).
+ *
+ */
+int reset_set(uint8 val)
+{
+    lsm6dsr_ctrl3_c_t ctrl3_c;
+
+    if (lsm6dsr_read_reg(&reg_ctx, LSM6DSR_CTRL3_C, (uint8 *)&ctrl3_c, 1) != LSM6DSR_OK)
+    {
+        return LSM6DSR_ERROR;
+    }
+
+    ctrl3_c.sw_reset = (uint8)val;
+    if (lsm6dsr_write_reg(&reg_ctx, LSM6DSR_CTRL3_C, (uint8 *)&ctrl3_c, 1) != LSM6DSR_OK)
+    {
+        return LSM6DSR_ERROR;
+    }
+    return LSM6DSR_OK;
+}
+/**
+ * @brief  Software reset. Restore the default values in user registers.[get]
+ *
+ * @param  ctx    Read / write interface definitions.(ptr)
+ * @param  val    Change the values of sw_reset in reg CTRL3_C
+ * @retval        Interface status (MANDATORY: return 0 -> no Error).
+ *
+ */
+int reset_get(lsm6dsr_ctx_t *ctx, uint8 *val)
+{
+    lsm6dsr_ctrl3_c_t ctrl3_c;
+
+    if (lsm6dsr_read_reg(&reg_ctx, LSM6DSR_CTRL3_C, (uint8 *)&ctrl3_c, 1) != LSM6DSR_OK)
+    {
+        return LSM6DSR_ERROR;
+    }
+    *val = ctrl3_c.sw_reset;
+
+    return LSM6DSR_OK;
+}
+/**
  * @brief  Configure the sensor in order to be used
  * @retval 0 in case of success, an error code otherwise
  */
@@ -366,3 +410,21 @@ END_GET_G:
     lua_pushinteger(L, Value[2]);
     return 3;
 }
+
+///////////////////////
+// Activity scenario
+///////////////////////
+int LSM6DSR_activity_begin(void *L)
+{
+    uint8 whoamI;
+
+    /* Check device ID */
+    lsm6dsr_device_id_get(&reg_ctx, &whoamI);
+
+    OPENAT_lua_print("whoamI: %02x", whoamI);
+
+
+    return 0;
+}
+
+///////////////////////

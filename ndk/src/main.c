@@ -64,6 +64,7 @@ luaL_Reg user_lib[] = {
 	{"get_table", get_table},
 	{"Get_X_AxesRaw", Get_X_AxesRaw},
 	{"Get_G_AxesRaw", Get_G_AxesRaw},
+	{"LSM6DSR_activity_begin", LSM6DSR_activity_begin},
 	{NULL, NULL}};
 	
 /*入口函数*/
