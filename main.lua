@@ -75,6 +75,10 @@ sys.taskInit(function()
             -- print("X axes: ", num1, num2,num3)
             -- local gnum1,gnum2,gnum3 = user.Get_G_AxesRaw();
             -- print("G axes: ", gnum1, gnum2,gnum3)
+            local wakeup = user.LSM6DSR_activity_check();
+            if wakeup == 1 then
+                print("Activity detected")
+            end
         end
     end
 end)

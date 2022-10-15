@@ -51,7 +51,7 @@ INT32 lsm6dsr_read_reg(lsm6dsr_ctx_t* ctx, UINT8 reg, UINT8* data,
 {
   INT32 ret;
   ret = ctx->read_reg(ctx->handle, reg, data, len);
-  OPENAT_lua_print("read_reg ret: %d", ret);
+  // OPENAT_lua_print("read_reg ret: %d", ret);
   return ret;
 }
 
