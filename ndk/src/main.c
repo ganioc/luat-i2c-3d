@@ -45,6 +45,13 @@ int setup_I2C(void *L)
 	lua_pushinteger(L, 0); // push returned value
 	return 1;
 }
+int get_table(void *L){
+	lua_pushinteger(L, 112);
+	lua_pushinteger(L, 201);
+	lua_pushinteger(L, 123);
+
+	return 3;
+}
 
 luaL_Reg user_lib[] = {
 	{"helloworld", helloworld},
@@ -54,6 +61,9 @@ luaL_Reg user_lib[] = {
 	{"LSM6DSR_end", LSM6DSR_end},
 	{"LSM6DSR_enable_X", Enable_X},
 	{"LSM6DSR_enable_G", Enable_G},
+	{"get_table", get_table},
+	{"Get_X_AxesRaw", Get_X_AxesRaw},
+	{"Get_G_AxesRaw", Get_G_AxesRaw},
 	{NULL, NULL}};
 	
 /*入口函数*/

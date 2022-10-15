@@ -32,6 +32,8 @@ int Disable_X(void *L);
 int Enable_G(void *L);
 int Disable_G(void *L);
 
+int Get_X_AxesRaw(void *L);
+int Get_G_AxesRaw(void *L);
 
 
 #endif

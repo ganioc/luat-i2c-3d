@@ -65,10 +65,14 @@ sys.taskInit(function()
         print("enable_G - rtn", rtn)
 
         while true do
-            user.helloworld()
-            sys.wait(1000)
+            -- user.helloworld()
+            sys.wait(100)
             -- pcf8563.dumpReg(rtc_i2c_handle)
-            user.read_LSM6DSR_WHOAMI()
+            -- user.read_LSM6DSR_WHOAMI()
+            local num1,num2,num3 = user.Get_X_AxesRaw();
+            print("X axes: ", num1, num2,num3)
+            local gnum1,gnum2,gnum3 = user.Get_G_AxesRaw();
+            print("G axes: ", gnum1, gnum2,gnum3)
         end
     end
 end)
