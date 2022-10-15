@@ -57,6 +57,9 @@ sys.taskInit(function()
         -- 添加测试demo
         user.setup_I2C(2)
 
+        local rtn = user.LSM6DSR_begin();
+        print("begin - rtn", rtn)
+
         while true do
             user.helloworld()
             sys.wait(1000)

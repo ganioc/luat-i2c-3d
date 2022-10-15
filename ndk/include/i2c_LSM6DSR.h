@@ -16,7 +16,16 @@ struct I2C_handle{
 };
 typedef struct I2C_handle I2C_handle_t;
 
+typedef enum
+{
+  LSM6DSR_OK = 0,
+  LSM6DSR_ERROR =-1
+} LSM6DSRStatusTypeDef;
+
+
+
 int read_LSM6DSR_WHOAMI(void * L);
+int LSM6DSR_begin(void *L);
 
 #endif
 

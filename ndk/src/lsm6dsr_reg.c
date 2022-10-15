@@ -1794,6 +1794,7 @@ INT32 lsm6dsr_auto_increment_set(lsm6dsr_ctx_t *ctx, UINT8 val)
   INT32 ret;
 
   ret = lsm6dsr_read_reg(ctx, LSM6DSR_CTRL3_C, (UINT8*)&ctrl3_c, 1);
+  OPENAT_lua_print("read LSM6DSR_CTRL3_C: %02x", ctrl3_c);
   if(ret == 0){
     ctrl3_c.if_inc= (UINT8)val;
     ret = lsm6dsr_write_reg(ctx, LSM6DSR_CTRL3_C, (UINT8*)&ctrl3_c, 1);
@@ -3710,6 +3711,8 @@ INT32 lsm6dsr_i3c_disable_set(lsm6dsr_ctx_t *ctx,
   INT32 ret;
 
   ret = lsm6dsr_read_reg(ctx, LSM6DSR_CTRL9_XL, (UINT8*)&ctrl9_xl, 1);
+  OPENAT_lua_print("read CTRL9_XL: %02x", ctrl9_xl);
+
   if(ret == 0){
     ctrl9_xl.i3c_disable = ((UINT8)val & 0x80U) >> 7;
     ret = lsm6dsr_write_reg(ctx, LSM6DSR_CTRL9_XL,
@@ -3718,6 +3721,7 @@ INT32 lsm6dsr_i3c_disable_set(lsm6dsr_ctx_t *ctx,
   if(ret == 0){
     ret = lsm6dsr_read_reg(ctx, LSM6DSR_I3C_BUS_AVB,
                              (UINT8*)&i3c_bus_avb, 1);
+     OPENAT_lua_print("read LSM6DSR_I3C_BUS_AVB: %02x", i3c_bus_avb);
   }
   if(ret == 0){
     i3c_bus_avb.i3c_bus_avb_sel = (UINT8)val & 0x03U;

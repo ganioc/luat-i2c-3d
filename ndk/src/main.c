@@ -2,7 +2,7 @@
 #include "../include/i2c_api.h"
 #include "../include/i2c_LSM6DSR.h"
 
-extern int read_LSM6DSR_WHOAMI(void * L);
+// extern int read_LSM6DSR_WHOAMI(void * L);
 
 
 int helloworld(void *L)
@@ -50,6 +50,7 @@ luaL_Reg user_lib[] = {
 	{"helloworld", helloworld},
 	{"setup_I2C", setup_I2C},
 	{"read_LSM6DSR_WHOAMI", read_LSM6DSR_WHOAMI},
+	{"LSM6DSR_begin", LSM6DSR_begin},
 	{NULL, NULL}};
 	
 /*入口函数*/
