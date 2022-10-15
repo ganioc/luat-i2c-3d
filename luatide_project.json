@@ -1,9 +1,9 @@
 {
 	"version": "2.6",
-	"projectName": "onlyndk",
+	"projectName": "luat-ndk-i2c",
 	"projectType": "ndk",
-	"corePath": "c:\\Users\\ruffman\\AppData\\Roaming\\LuatIDE\\LuatideCore\\Air72XUX_CORE\\LuatOS-Air_V4017_RDA8910_RFTNF_0x140000.pac",
-	"libPath": "c:\\Users\\ruffman\\AppData\\Roaming\\LuatIDE\\LuatideLib\\Air72XUX_LIB\\V2.4.3",
+	"corePath": "c:\\Users\\lucy\\AppData\\Roaming\\LuatIDE\\LuatideCore\\Air72XUX_CORE\\LuatOS-Air_V4017_RDA8910_RFTNF_0x140000.pac",
+	"libPath": "c:\\Users\\lucy\\AppData\\Roaming\\LuatIDE\\LuatideLib\\Air72XUX_LIB\\V2.4.3",
 	"moduleModel": "air72XUX/air82XUX",
 	"appFile": [
 		"luatide_project.json",
@@ -22,15 +22,13 @@
 		"ndk\\core_inc\\readme.txt",
 		"ndk\\core_inc\\std_type.h",
 		"ndk\\src\\main.c",
-		"ndk\\src\\main.d",
-		"ndk\\src\\main.o",
 		"pcf8563.lua",
 		"ndk",
 		"ndk\\core_inc",
 		"ndk\\src",
 		"ndk\\build\\user.lib"
 	],
-	"modulePort": "COM27",
+	"modulePort": "COM7",
 	"ignore": [
 		"ndk\\Makefile",
 		"ndk\\src\\Makefile"

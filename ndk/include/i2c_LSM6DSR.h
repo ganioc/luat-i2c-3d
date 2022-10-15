@@ -4,8 +4,8 @@
 #include "core_api.h"
 
 #define LSM6DSR_I2C_PORT   OPENAT_I2C_2
-//#define LSM6DSR_I2C_ADDR   0x6A
-#define LSM6DSR_I2C_ADDR   0x6B
+#define LSM6DSR_I2C_ADDR   0x6A
+// #define LSM6DSR_I2C_ADDR   0x6B
 
 
 #include "./lsm6dsr_reg.h"
