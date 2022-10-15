@@ -52,6 +52,8 @@ luaL_Reg user_lib[] = {
 	{"read_LSM6DSR_WHOAMI", read_LSM6DSR_WHOAMI},
 	{"LSM6DSR_begin", LSM6DSR_begin},
 	{"LSM6DSR_end", LSM6DSR_end},
+	{"LSM6DSR_enable_X", Enable_X},
+	{"LSM6DSR_enable_G", Enable_G},
 	{NULL, NULL}};
 	
 /*入口函数*/

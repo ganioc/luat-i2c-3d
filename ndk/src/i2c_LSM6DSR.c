@@ -158,12 +158,12 @@ int LSM6DSR_end(void *L){
     int rtn = -1;
 
   /* Disable both acc and gyro */
-  if (Disable_X() != LSM6DSR_OK)
+  if (Disable_X(L) != LSM6DSR_OK)
   {
     goto END_END;
   }
 
-  if (Disable_G() != LSM6DSR_OK)
+  if (Disable_G(L) != LSM6DSR_OK)
   {
     goto END_END;
   }
@@ -177,101 +177,121 @@ END_END:
  * @brief  Enable the LSM6DSR accelerometer sensor
  * @retval 0 in case of success, an error code otherwise
  */
-int Enable_X()
+int Enable_X(void *L)
 {
+    int rtn = -1;
   /* Check if the component is already enabled */
   if (acc_is_enabled == 1U)
   {
-    return LSM6DSR_OK;
+    goto END_ENABLE_X_NORM;
   }
 
   /* Output data rate selection. */
   if (lsm6dsr_xl_data_rate_set(&reg_ctx, acc_odr) != LSM6DSR_OK)
   {
-    return LSM6DSR_ERROR;
+    goto END_ENABLE_X;
   }
 
   acc_is_enabled = 1;
 
-  return LSM6DSR_OK;
+END_ENABLE_X_NORM:
+    rtn = 0;
+END_ENABLE_X:
+    lua_pushinteger(L, rtn); // push returned value
+    return 1;
 }
 /**
  * @brief  Disable the LSM6DSR accelerometer sensor
  * @retval 0 in case of success, an error code otherwise
  */
-int Disable_X()
+int Disable_X(void *L)
 {
+    int rtn =-1;
   /* Check if the component is already disabled */
   if (acc_is_enabled == 0U)
   {
-    return LSM6DSR_OK;
+    goto END_DISABLE_X_NORM;
   }
 
   /* Get current output data rate. */
   if (lsm6dsr_xl_data_rate_get(&reg_ctx, &acc_odr) != LSM6DSR_OK)
   {
-    return LSM6DSR_ERROR;
+    goto END_DISABLE_X;
   }
 
   /* Output data rate selection - power down. */
   if (lsm6dsr_xl_data_rate_set(&reg_ctx, LSM6DSR_XL_ODR_OFF) != LSM6DSR_OK)
   {
-    return LSM6DSR_ERROR;
+    goto END_DISABLE_X;
   }
 
   acc_is_enabled = 0;
 
-  return LSM6DSR_OK;
+END_DISABLE_X_NORM:
+    rtn = 0;
+END_DISABLE_X:
+    lua_pushinteger(L, rtn); // push returned value
+    return 1;
 }
 /**
  * @brief  Enable the LSM6DSR gyroscope sensor
  * @retval 0 in case of success, an error code otherwise
  */
-int Enable_G()
+int Enable_G(void *L)
 {
+    int rtn = -1;
   /* Check if the component is already enabled */
   if (gyro_is_enabled == 1U)
   {
-    return LSM6DSR_OK;
+    goto END_ENABLE_G_NORM;
   }
 
   /* Output data rate selection. */
   if (lsm6dsr_gy_data_rate_set(&reg_ctx, gyro_odr) != LSM6DSR_OK)
   {
-    return LSM6DSR_ERROR;
+    goto END_ENABLE_G;
   }
 
   gyro_is_enabled = 1;
 
-  return LSM6DSR_OK;
+END_ENABLE_G_NORM:
+    rtn = 0;
+END_ENABLE_G:
+    lua_pushinteger(L, rtn); // push returned value
+    return 1;
 }
 /**
  * @brief  Disable the LSM6DSR gyroscope sensor
  * @retval 0 in case of success, an error code otherwise
  */
-int Disable_G()
+int Disable_G(void *L)
 {
+    int rtn = -1;
   /* Check if the component is already disabled */
   if (gyro_is_enabled == 0U)
   {
-    return LSM6DSR_OK;
+    goto END_DISABLE_G_NORM;
   }
 
   /* Get current output data rate. */
   if (lsm6dsr_gy_data_rate_get(&reg_ctx, &gyro_odr) != LSM6DSR_OK)
   {
-    return LSM6DSR_ERROR;
+    goto END_DISABLE_G;
   }
 
   /* Output data rate selection - power down. */
   if (lsm6dsr_gy_data_rate_set(&reg_ctx, LSM6DSR_GY_ODR_OFF) != LSM6DSR_OK)
   {
-    return LSM6DSR_ERROR;
+    goto END_DISABLE_G;
   }
 
   gyro_is_enabled = 0;
 
-  return LSM6DSR_OK;
+END_DISABLE_G_NORM:
+    rtn = 0;
+END_DISABLE_G:
+    lua_pushinteger(L, rtn); // push returned value
+    return 1;
 }
 
 

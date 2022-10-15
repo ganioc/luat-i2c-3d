@@ -59,6 +59,10 @@ sys.taskInit(function()
 
         local rtn = user.LSM6DSR_begin();
         print("begin - rtn", rtn)
+        rtn = user.LSM6DSR_enable_X();
+        print("enable_X - rtn", rtn)
+        rtn = user.LSM6DSR_enable_G();
+        print("enable_G - rtn", rtn)
 
         while true do
             user.helloworld()

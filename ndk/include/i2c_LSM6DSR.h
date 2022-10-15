@@ -27,10 +27,10 @@ typedef enum
 int read_LSM6DSR_WHOAMI(void * L);
 int LSM6DSR_begin(void *L);
 int LSM6DSR_end(void *L);
-int Enable_X();
-int Disable_X();
-int Enable_G();
-int Disable_G();
+int Enable_X(void *L);
+int Disable_X(void *L);
+int Enable_G(void *L);
+int Disable_G(void *L);
 
 
 
