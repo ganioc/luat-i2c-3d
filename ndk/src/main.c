@@ -51,6 +51,7 @@ luaL_Reg user_lib[] = {
 	{"setup_I2C", setup_I2C},
 	{"read_LSM6DSR_WHOAMI", read_LSM6DSR_WHOAMI},
 	{"LSM6DSR_begin", LSM6DSR_begin},
+	{"LSM6DSR_end", LSM6DSR_end},
 	{NULL, NULL}};
 	
 /*入口函数*/
