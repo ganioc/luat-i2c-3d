@@ -68,6 +68,8 @@ luaL_Reg user_lib[] = {
 	{"LSM6DSR_activity_check", LSM6DSR_activity_check},
 	{"LSM6DSR_tilt_begin", LSM6DSR_tilt_begin},
 	{"LSM6DSR_tilt_check", LSM6DSR_tilt_check},
+	{"LSM6DSR_polling_begin", LSM6DSR_polling_begin},
+	{"LSM6DSR_polling_check", LSM6DSR_polling_check},
 	{NULL, NULL}};
 	
 /*入口函数*/

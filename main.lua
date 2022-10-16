@@ -64,7 +64,7 @@ sys.taskInit(function()
         -- rtn = user.LSM6DSR_enable_G();
         -- print("enable_G - rtn", rtn)
 
-        user.LSM6DSR_activity_begin();
+        user.LSM6DSR_polling_begin();
 
         while true do
             -- user.helloworld()
@@ -75,9 +75,10 @@ sys.taskInit(function()
             -- print("X axes: ", num1, num2,num3)
             -- local gnum1,gnum2,gnum3 = user.Get_G_AxesRaw();
             -- print("G axes: ", gnum1, gnum2,gnum3)
-            local wakeup = user.LSM6DSR_activity_check();
+            local wakeup,n1,n2,n3 = user.LSM6DSR_polling_check();
             if wakeup == 1 then
                 print("Tilt detected")
+                print(n1,n2,n3)
             end
         end
     end
