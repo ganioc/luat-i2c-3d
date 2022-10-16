@@ -66,6 +66,8 @@ luaL_Reg user_lib[] = {
 	{"Get_G_AxesRaw", Get_G_AxesRaw},
 	{"LSM6DSR_activity_begin", LSM6DSR_activity_begin},
 	{"LSM6DSR_activity_check", LSM6DSR_activity_check},
+	{"LSM6DSR_tilt_begin", LSM6DSR_tilt_begin},
+	{"LSM6DSR_tilt_check", LSM6DSR_tilt_check},
 	{NULL, NULL}};
 	
 /*入口函数*/

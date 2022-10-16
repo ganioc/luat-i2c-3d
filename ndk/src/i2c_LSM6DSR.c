@@ -444,9 +444,11 @@ int LSM6DSR_activity_begin(void *L)
     /* Set duration for Activity detection to 9.62 ms (= 2 * 1 / ODR_XL) */
     lsm6dsr_wkup_dur_set(&reg_ctx, 0x02);
     /* Set duration for Inactivity detection to 4.92 s (= 2 * 512 / ODR_XL) */
-    lsm6dsr_act_sleep_dur_set(&reg_ctx, 0x02);
+    lsm6dsr_act_sleep_dur_set(&reg_ctx, 0x01);
     /* Set Activity/Inactivity threshold to 62.5 mg */
-    lsm6dsr_wkup_threshold_set(&reg_ctx, 0x02);
+    lsm6dsr_wkup_threshold_set(&reg_ctx, 0x01);
+    /* Set wake ths weight */
+    lsm6dsr_wkup_ths_weight_set(&reg_ctx, 0x01);
     /* Inactivity configuration: XL to 12.5 in LP, gyro to Power-Down */
     lsm6dsr_act_mode_set(&reg_ctx, LSM6DSR_XL_12Hz5_GY_PD);
     /* Enable interrupt generation on Inactivity INT1 pin */
@@ -456,24 +458,78 @@ int LSM6DSR_activity_begin(void *L)
 
     return 0;
 }
-int LSM6DSR_activity_check(void *L){
+int LSM6DSR_activity_check(void *L)
+{
     lsm6dsr_all_sources_t all_source;
-    int rtn=0;
+    int rtn = 0;
     /* Check if Activity/Inactivity events */
     lsm6dsr_all_sources_get(&reg_ctx, &all_source);
 
-    if(all_source.wake_up_src.sleep_state){
+    if (all_source.wake_up_src.sleep_state)
+    {
         rtn = 0;
     }
 
-    if(all_source.wake_up_src.wu_ia){
+    if (all_source.wake_up_src.wu_ia)
+    {
         rtn = 1;
     }
-
+    //OPENAT_lua_print("act check: %d", rtn);
     lua_pushinteger(L, rtn); // push returned value
     return 1;
 }
 
-
-
 ///////////////////////
+// Tilt Scenario
+///////////////////////
+int LSM6DSR_tilt_begin(void *L)
+{
+    uint8 whoamI, rst;
+    lsm6dsr_pin_int2_route_t int2_route;
+
+    /* Check device ID */
+    lsm6dsr_device_id_get(&reg_ctx, &whoamI);
+
+    OPENAT_lua_print("whoamI: %02x", whoamI);
+
+    /* Restore default configuration */
+    lsm6dsr_reset_set(&reg_ctx, PROPERTY_ENABLE);
+    do
+    {
+        lsm6dsr_reset_get(&reg_ctx, &rst);
+    } while (rst);
+
+    /* Disable I3C interface */
+    lsm6dsr_i3c_disable_set(&reg_ctx, LSM6DSR_I3C_DISABLE);
+
+    /* Set XL Output Data Rate: The tilt function works at 26 Hz,
+     * so the accelerometer ODR must be set at 26 Hz or higher values
+     */
+    lsm6dsr_xl_data_rate_set(&reg_ctx, LSM6DSR_XL_ODR_26Hz);
+    /* Set 2g full XL scale. */
+    lsm6dsr_xl_full_scale_set(&reg_ctx, LSM6DSR_2g);
+    /* Enable Tilt in embedded function. */
+    lsm6dsr_tilt_sens_set(&reg_ctx, PROPERTY_ENABLE);
+    /* Uncomment if interrupt generation on Tilt INT2 pin */
+    lsm6dsr_pin_int2_route_get(&reg_ctx, &int2_route);
+    int2_route.emb_func_int2.int2_tilt = PROPERTY_ENABLE;
+    lsm6dsr_pin_int2_route_set(&reg_ctx, &int2_route);
+
+    /* Uncomment to have interrupt latched */
+    lsm6dsr_int_notification_set(&reg_ctx, PROPERTY_ENABLE);    
+
+    return 0;
+}
+int LSM6DSR_tilt_check(void *L)
+{
+    int8 is_tilt,rtn = 0;
+    /* Check if Tilt events */
+    lsm6dsr_tilt_flag_data_ready_get(&reg_ctx, &is_tilt);
+
+    if (is_tilt)
+    {
+        rtn = 1;
+    }
+    lua_pushinteger(L, rtn); // push returned value
+    return 1;
+}
