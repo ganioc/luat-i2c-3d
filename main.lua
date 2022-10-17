@@ -68,17 +68,17 @@ sys.taskInit(function()
 
         while true do
             -- user.helloworld()
-            sys.wait(200)
+            sys.wait(100)
             -- pcf8563.dumpReg(rtc_i2c_handle)
             -- user.read_LSM6DSR_WHOAMI()
             -- local num1,num2,num3 = user.Get_X_AxesRaw();
             -- print("X axes: ", num1, num2,num3)
             -- local gnum1,gnum2,gnum3 = user.Get_G_AxesRaw();
             -- print("G axes: ", gnum1, gnum2,gnum3)
-            local wakeup,n1,n2,n3 = user.LSM6DSR_polling_check();
+            local wakeup,n1 = user.LSM6DSR_polling_check();
             if wakeup == 1 then
-                print("Tilt detected")
-                print(n1,n2,n3)
+                print()
+                print("Tilt detected",n1)
             end
         end
     end

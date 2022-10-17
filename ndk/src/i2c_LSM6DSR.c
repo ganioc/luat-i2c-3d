@@ -2,12 +2,16 @@
 #include "../include/i2c_LSM6DSR.h"
 #include "../include/i2c_api.h"
 #include "../include/lsm6dsr_reg.h"
+#include "../include/kalman.h"
 
 // 0 disabled, 1 enabled
 static int acc_is_enabled = 0;
 static int gyro_is_enabled = 0;
 static int acc_odr = LSM6DSR_XL_ODR_104Hz;
 static int gyro_odr = LSM6DSR_GY_ODR_104Hz;
+
+Kalman_t filterAccX, filterAccY, filterAccZ;
+
 
 INT32 st_i2c_read(void *handle, UINT8 reg, UINT8 *data, UINT16 len)
 {
@@ -571,6 +575,11 @@ int LSM6DSR_polling_begin(void *L)
     lsm6dsr_xl_hp_path_on_out_set(&reg_ctx, LSM6DSR_LP_ODR_DIV_100);
     lsm6dsr_xl_filter_lp2_set(&reg_ctx, PROPERTY_ENABLE);
 
+    Kalman_init(&filterAccX, KALMAN_R, KALMAN_Q, KALMAN_A,KALMAN_B, KALMAN_C);
+    Kalman_init(&filterAccY, KALMAN_R, KALMAN_Q, KALMAN_A,KALMAN_B, KALMAN_C);
+    Kalman_init(&filterAccZ, KALMAN_R, KALMAN_Q, KALMAN_A, KALMAN_B, KALMAN_C);
+
+
     return 0;
 }
 float compute_tilt_acos(int16 gx, int16 gy, int16 gz){
@@ -596,7 +605,7 @@ float compute_tilt_atan(int16 gx, int16 gy, int16 gz){
 }
 /*
 ** output, 0~3.14, tilt value
-
+    return, (radian * 1000000)
 */
 int LSM6DSR_polling_check(void *L)
 {
@@ -624,8 +633,13 @@ int LSM6DSR_polling_check(void *L)
         data_raw_acceleration[1] = data_raw.i16bit[1];
         data_raw_acceleration[2] = data_raw.i16bit[2];
 
-        acceleration_mg[0] =compute_tilt_acos(data_raw_acceleration[0], data_raw_acceleration[1], data_raw_acceleration[2]);
-        acceleration_mg[1] =compute_tilt_asin(data_raw_acceleration[0], data_raw_acceleration[1], data_raw_acceleration[2]);
+        // Kalman filter the data
+        data_raw_acceleration[0] = Kalman_filter(&filterAccX,data_raw_acceleration[0], 0);
+        data_raw_acceleration[1] = Kalman_filter(&filterAccY,data_raw_acceleration[1], 0);
+        data_raw_acceleration[2] = Kalman_filter(&filterAccZ,data_raw_acceleration[2], 0);        
+
+        // acceleration_mg[0] =compute_tilt_acos(data_raw_acceleration[0], data_raw_acceleration[1], data_raw_acceleration[2]);
+        // acceleration_mg[1] =compute_tilt_asin(data_raw_acceleration[0], data_raw_acceleration[1], data_raw_acceleration[2]);
         acceleration_mg[2] =compute_tilt_atan(data_raw_acceleration[0], data_raw_acceleration[1], data_raw_acceleration[2]);
 
         OPENAT_lua_print("%f %f %f", acceleration_mg[0],acceleration_mg[1], acceleration_mg[2]);
@@ -639,9 +653,9 @@ int LSM6DSR_polling_check(void *L)
     }
 
     lua_pushinteger(L, rtn);
-    lua_pushinteger(L, (int) (acceleration_mg[0] * 100000));
-    lua_pushinteger(L, (int) (acceleration_mg[1] * 100000));
-    lua_pushinteger(L, (int) (acceleration_mg[2] * 100000));
+    // lua_pushinteger(L, (int) (acceleration_mg[0] * 100000));
+    // lua_pushinteger(L, (int) (acceleration_mg[1] * 100000));
+    lua_pushinteger(L, (int) (acceleration_mg[2] * 1000000));
 
     // lua_pushnumber(L, acceleration_mg[0]);
     // lua_pushnumber(L, acceleration_mg[1]);
@@ -650,5 +664,5 @@ int LSM6DSR_polling_check(void *L)
     // lua_pushinteger(L, data_raw_acceleration[0]);
     // lua_pushinteger(L, data_raw_acceleration[1]);
     // lua_pushinteger(L, data_raw_acceleration[2]);
-    return 4;
+    return 2;
 }
