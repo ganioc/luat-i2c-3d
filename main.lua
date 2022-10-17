@@ -77,7 +77,6 @@ sys.taskInit(function()
             -- print("G axes: ", gnum1, gnum2,gnum3)
             local wakeup,n1 = user.LSM6DSR_polling_check();
             if wakeup == 1 then
-                print()
                 print("Tilt detected",n1)
             end
         end
