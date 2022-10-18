@@ -1,5 +1,5 @@
 ## LSM6DSR读取倾角
-返回值为弧度值*1000000
+返回值为弧度值*1000000, tilt x, tilt y, tilt z,
 
 ## 使用方法
 
@@ -11,8 +11,8 @@ user.setup_I2C(2)
 user.LSM6DSR_polling_begin();
 
 // 读取倾角的数值
-local wakeup,n1 = user.LSM6DSR_polling_check();
+local wakeup,nx,ny,nz = user.LSM6DSR_polling_check();
 if wakeup == 1 then
-    print("Tilt detected",n1)
+    print("Tilt detected",nx,ny,nz)
 end
 ```

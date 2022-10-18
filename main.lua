@@ -75,9 +75,9 @@ sys.taskInit(function()
             -- print("X axes: ", num1, num2,num3)
             -- local gnum1,gnum2,gnum3 = user.Get_G_AxesRaw();
             -- print("G axes: ", gnum1, gnum2,gnum3)
-            local wakeup,n1 = user.LSM6DSR_polling_check();
+            local wakeup,tiltx, tilty, tiltz = user.LSM6DSR_polling_check();
             if wakeup == 1 then
-                print("Tilt detected",n1)
+                print("Tilt detected",tiltx,tilty,tiltz)
             end
         end
     end

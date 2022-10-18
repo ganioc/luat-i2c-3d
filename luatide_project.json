@@ -8,8 +8,6 @@
 	"appFile": [
 		"luatide_project.json",
 		"main.lua",
-		"ndk\\build\\user.lib",
-		"ndk\\build\\user.map",
 		"ndk\\build.bat",
 		"ndk\\build_float.bat",
 		"ndk\\core_inc\\am_openat_common.h",
@@ -42,10 +40,10 @@
 		"ndk\\src\\main.d",
 		"pcf8563.lua",
 		"ndk",
-		"ndk\\build",
 		"ndk\\core_inc",
 		"ndk\\include",
-		"ndk\\src"
+		"ndk\\src",
+		"ndk\\build\\user.lib"
 	],
 	"modulePort": "COM27",
 	"ignore": [

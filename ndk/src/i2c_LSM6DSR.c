@@ -595,6 +595,7 @@ float compute_tilt_asin(int16 gx, int16 gy, int16 gz){
     double tilt = asin(square_xy/square);
     return (float) tilt;
 }
+
 float compute_tilt_atan(int16 gx, int16 gy, int16 gz){
     if(gz == 0){
         return 1.570795;
@@ -602,6 +603,15 @@ float compute_tilt_atan(int16 gx, int16 gy, int16 gz){
     double square_xy = sqrt(pow(gx,2)+ pow(gy,2));
     double tilt = atan2(square_xy, gz);
     return (float) tilt;
+}
+float compute_tilt_atan_x(int16 gx, int16 gy, int16 gz){
+    return compute_tilt_atan(gy,gz,gx);
+}
+float compute_tilt_atan_y(int16 gx, int16 gy, int16 gz){
+    return compute_tilt_atan(gx,gz,gy);
+}
+float compute_tilt_atan_z(int16 gx, int16 gy, int16 gz){
+    return compute_tilt_atan(gx,gy,gz);
 }
 /*
 ** output, 0~3.14, tilt value
@@ -638,9 +648,9 @@ int LSM6DSR_polling_check(void *L)
         data_raw_acceleration[1] = Kalman_filter(&filterAccY,data_raw_acceleration[1], 0);
         data_raw_acceleration[2] = Kalman_filter(&filterAccZ,data_raw_acceleration[2], 0);        
 
-        // acceleration_mg[0] =compute_tilt_acos(data_raw_acceleration[0], data_raw_acceleration[1], data_raw_acceleration[2]);
-        // acceleration_mg[1] =compute_tilt_asin(data_raw_acceleration[0], data_raw_acceleration[1], data_raw_acceleration[2]);
-        acceleration_mg[2] =compute_tilt_atan(data_raw_acceleration[0], data_raw_acceleration[1], data_raw_acceleration[2]);
+        acceleration_mg[0] =compute_tilt_atan_x(data_raw_acceleration[0], data_raw_acceleration[1], data_raw_acceleration[2]);
+        acceleration_mg[1] =compute_tilt_atan_y(data_raw_acceleration[0], data_raw_acceleration[1], data_raw_acceleration[2]);
+        acceleration_mg[2] =compute_tilt_atan_z(data_raw_acceleration[0], data_raw_acceleration[1], data_raw_acceleration[2]);
 
         OPENAT_lua_print("%f %f %f", acceleration_mg[0],acceleration_mg[1], acceleration_mg[2]);
 
@@ -653,8 +663,8 @@ int LSM6DSR_polling_check(void *L)
     }
 
     lua_pushinteger(L, rtn);
-    // lua_pushinteger(L, (int) (acceleration_mg[0] * 100000));
-    // lua_pushinteger(L, (int) (acceleration_mg[1] * 100000));
+    lua_pushinteger(L, (int) (acceleration_mg[0] * 1000000));
+    lua_pushinteger(L, (int) (acceleration_mg[1] * 1000000));
     lua_pushinteger(L, (int) (acceleration_mg[2] * 1000000));
 
     // lua_pushnumber(L, acceleration_mg[0]);
@@ -664,5 +674,5 @@ int LSM6DSR_polling_check(void *L)
     // lua_pushinteger(L, data_raw_acceleration[0]);
     // lua_pushinteger(L, data_raw_acceleration[1]);
     // lua_pushinteger(L, data_raw_acceleration[2]);
-    return 2;
+    return 4;
 }
