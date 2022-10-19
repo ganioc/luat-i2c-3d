@@ -2,7 +2,7 @@
 返回值为弧度值*1000000, tilt x, tilt y, tilt z,
 
 ## 使用方法
-
+ 
 ```lua
 // 设置I2C, port=2
 user.setup_I2C(2) 

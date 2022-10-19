@@ -8,8 +8,8 @@
  * Default parameters: 0.1, 20, 1.0, 0, 1.0
  */
 
-#define KALMAN_R 0.05
-#define KALMAN_Q 20
+#define KALMAN_R 0.5
+#define KALMAN_Q 5
 #define KALMAN_A 1.0
 #define KALMAN_B 0
 #define KALMAN_C 1.0

@@ -23,7 +23,7 @@ int setup_I2C(void *L)
 	T_AMOPENAT_I2C_PARAM i2cCfg;
 	OPENAT_lua_print("I2C PORT: %d", num1);
 	memset(&i2cCfg, 0, sizeof(T_AMOPENAT_I2C_PARAM));
-	i2cCfg.freq = 100000;
+	i2cCfg.freq = 400000;
 	i2cCfg.regAddrBytes = 0;
 	i2cCfg.noAck = FALSE;
 	i2cCfg.noStop = FALSE;
@@ -70,6 +70,7 @@ luaL_Reg user_lib[] = {
 	// {"LSM6DSR_tilt_check", LSM6DSR_tilt_check},
 	{"LSM6DSR_polling_begin", LSM6DSR_polling_begin},
 	{"LSM6DSR_polling_check", LSM6DSR_polling_check},
+	{"LSM6DSR_polling_acc", LSM6DSR_polling_acc},
 	{NULL, NULL}};
 	
 /*入口函数*/

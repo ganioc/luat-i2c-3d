@@ -43,6 +43,6 @@ int LSM6DSR_tilt_check(void* L);
 
 int LSM6DSR_polling_begin(void *L);
 int LSM6DSR_polling_check(void *L);
-
+int LSM6DSR_polling_acc(void *L);
 #endif
 

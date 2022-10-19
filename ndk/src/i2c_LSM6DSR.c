@@ -676,3 +676,40 @@ int LSM6DSR_polling_check(void *L)
     // lua_pushinteger(L, data_raw_acceleration[2]);
     return 4;
 }
+int LSM6DSR_polling_acc(void *L){
+    uint8 reg, rtn = 0;
+    axis3bit16_t data_raw;
+    int16 data_raw_acceleration[3];
+    float acceleration_mg[3]={0,0,0};
+    /* Read output only if new xl value is available */
+    lsm6dsr_xl_flag_data_ready_get(&reg_ctx, &reg);
+
+    if (reg)
+    {
+        rtn = 1;
+        /* Read acceleration field data */
+        // memset(data_raw_acceleration, 0x00, 3 * sizeof(int16));
+        // lsm6dsr_acceleration_raw_get(&reg_ctx, data_raw_acceleration);
+        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_L_A, &data_raw.u8bit[0], 1);
+        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_H_A, &data_raw.u8bit[1], 1);
+        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTY_L_A, &data_raw.u8bit[2], 1);
+        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTY_H_A, &data_raw.u8bit[3], 1);
+        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTZ_L_A, &data_raw.u8bit[4], 1);
+        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTZ_H_A, &data_raw.u8bit[5], 1);
+        /* Format the data. */
+        data_raw_acceleration[0] = data_raw.i16bit[0];
+        data_raw_acceleration[1] = data_raw.i16bit[1];
+        data_raw_acceleration[2] = data_raw.i16bit[2];
+
+        // Kalman filter the data
+        data_raw_acceleration[0] = Kalman_filter(&filterAccX,data_raw_acceleration[0], 0);
+        data_raw_acceleration[1] = Kalman_filter(&filterAccY,data_raw_acceleration[1], 0);
+        data_raw_acceleration[2] = Kalman_filter(&filterAccZ,data_raw_acceleration[2], 0); 
+
+    }  
+    lua_pushinteger(L, rtn);
+    lua_pushinteger(L, (int) (data_raw_acceleration[0]));
+    lua_pushinteger(L, (int) (data_raw_acceleration[1]));
+    lua_pushinteger(L, (int) (data_raw_acceleration[2]));
+    return 4;
+}

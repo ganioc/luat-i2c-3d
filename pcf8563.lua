@@ -68,7 +68,7 @@ end
 
 function pcf8563.dumpReg(handle)
     local addrs = {0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8}
-    for i = 1,3, 1 do
+    for i = 1,9, 1 do
         local data = pcf8563Read(handle, addrs[i])
         print("data ->", data)
         if data then
