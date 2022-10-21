@@ -55,6 +55,7 @@ function pcf8563.setup(i2cHandle)
     if i2c.setup(i2cHandle, I2C_FREQ, SLAVE_ADDR) ~= I2C_FREQ then
         log.warn("RTC fail to init i2c")
     end
+    i2c.write(i2cHandle, TIMER_CTRL_ADDR, 0x03)
     --i2c.close(2)
     log.info("end of pcf8563 setup")
 

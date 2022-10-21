@@ -11,7 +11,9 @@ LOG_LEVEL = log.LOGLEVEL_TRACE
 require "sys"
 require "ril"
 require "pins"
--- require "uart"
+
+require "uart"
+
 
 -- 打印死机信息
 ril.request("AT*EXINFO?")
@@ -44,15 +46,16 @@ sys.taskInit(function()
     sys.wait(1000)
     print("---------------------")
     -- enable RTC
-    pmd.ldoset(2, pmd.LDO_VMMC)
-    setOutputFnc = pins.setup(pio.P0_27, 1)
+    -- pmd.ldoset(2, pmd.LDO_VMMC)
+    -- setOutputFnc = pins.setup(pio.P0_27, 1)
 
 
     sys.wait(1000)
     pcf8563.setup(2)
-    pcf8563.enableAlarm(rtc_i2c_handle, 3)
+    -- pcf8563.enableAlarm(rtc_i2c_handle, 3)
 
-    uart.setup(0x81, 115200, 8, uart.PAR_NONE, uart.STOP_1)
+
+    --uart.setup(0x81, 115200, 8, uart.PAR_NONE, uart.STOP_1)
 
 
     local handle = dl.open("/lua/user.lib", "user_main")
@@ -68,7 +71,8 @@ sys.taskInit(function()
         -- rtn = user.LSM6DSR_enable_G();
         -- print("enable_G - rtn", rtn)
 
-        user.LSM6DSR_polling_begin();
+        -- user.LSM6DSR_polling_begin();
+        user.QMI8658_polling_begin();
 
         while true do
             -- user.helloworld()
@@ -83,12 +87,11 @@ sys.taskInit(function()
             -- print("X axes: ", num1, num2,num3)
             -- local gnum1,gnum2,gnum3 = user.Get_G_AxesRaw();
             -- print("G axes: ", gnum1, gnum2,gnum3)
-            local wakeup,tiltx, tilty, tiltz = user.LSM6DSR_polling_acc();
-            if wakeup == 1 then
-                print("ACC:",tiltx,tilty,tiltz)
-            end
+            -- local wakeup,tiltx, tilty, tiltz = user.LSM6DSR_polling_acc();
+            -- if wakeup == 1 then
+            --     print("ACC:",tiltx,tilty,tiltz)
+            -- end
 
-            -- uart.write(0x81,"A")
         end
     end
 end)

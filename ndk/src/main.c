@@ -1,6 +1,7 @@
 #include "core_api.h"
 #include "../include/i2c_api.h"
 #include "../include/i2c_LSM6DSR.h"
+#include "../include/i2c_QMI8658.h"
 
 // extern int read_LSM6DSR_WHOAMI(void * L);
 
@@ -71,6 +72,9 @@ luaL_Reg user_lib[] = {
 	{"LSM6DSR_polling_begin", LSM6DSR_polling_begin},
 	{"LSM6DSR_polling_check", LSM6DSR_polling_check},
 	{"LSM6DSR_polling_acc", LSM6DSR_polling_acc},
+	{"QMI8658_polling_begin", QMI8658_polling_begin},
+	{"QMI8658_polling_check", QMI8658_polling_check},
+	{"QMI8658_polling_acc", QMI8658_polling_acc},
 	{NULL, NULL}};
 	
 /*入口函数*/
