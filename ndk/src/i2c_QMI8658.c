@@ -64,14 +64,31 @@ int read_QMI8658_WHOAMI(void *L)
 
     return 0;
 }
+int read_QMI8658_temp(void *L){
+    UINT8 reg = Qmi8658Register_Tempearture_L;
+    byte1bit16_t data_raw;
+    int16 data;
+    int rtn = -1;
+    float temp_f;
 
+    rtn = qmi_i2c_read( reg, &data_raw.u8bit[0], 1);
+    reg = Qmi8658Register_Tempearture_H;
+    qmi_i2c_read( reg, &data_raw.u8bit[1], 1);
+    data = data_raw.i16bit;
+
+    temp_f = (float)data/256.0f;
+    OPENAT_lua_print("temp %f", temp_f);
+
+    return 0;
+}
 int QMI8658_polling_begin(void *L){
 
 
     OPENAT_lua_print("QMI8658_polling_begin");
     
+    
     read_QMI8658_WHOAMI(L);
-
+    read_QMI8658_temp(L);
 
     return 1;
 }

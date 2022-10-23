@@ -2,8 +2,8 @@
 	"version": "2.6",
 	"projectName": "luat-ndk-i2c",
 	"projectType": "ndk",
-	"corePath": "c:\\Users\\ruffman\\AppData\\Roaming\\LuatIDE\\LuatideCore\\Air72XUX_CORE\\LuatOS-Air_V4017_RDA8910_RFTNF_0x140000.pac",
-	"libPath": "c:\\Users\\ruffman\\AppData\\Roaming\\LuatIDE\\LuatideLib\\Air72XUX_LIB\\V2.4.3",
+	"corePath": "c:\\Users\\lucy\\AppData\\Roaming\\LuatIDE\\LuatideCore\\Air72XUX_CORE\\LuatOS-Air_V4017_RDA8910_RFTNF_0x140000.pac",
+	"libPath": "c:\\Users\\lucy\\AppData\\Roaming\\LuatIDE\\LuatideLib\\Air72XUX_LIB\\V2.4.3",
 	"moduleModel": "air72XUX/air82XUX",
 	"appFile": [
 		"luatide_project.json",
@@ -32,8 +32,6 @@
 		"ndk\\src\\i2c_LSM6DSR.d",
 		"ndk\\src\\i2c_LSM6DSR.o",
 		"ndk\\src\\kalman.c",
-		"ndk\\src\\kalman.d",
-		"ndk\\src\\kalman.o",
 		"ndk\\src\\lsm6dsr_reg.c",
 		"ndk\\src\\lsm6dsr_reg.d",
 		"ndk\\src\\main.c",
@@ -42,10 +40,9 @@
 		"ndk",
 		"ndk\\core_inc",
 		"ndk\\include",
-		"ndk\\src",
-		"ndk\\build\\user.lib"
+		"ndk\\src"
 	],
-	"modulePort": "COM36",
+	"modulePort": "COM7",
 	"ignore": [
 		"ndk\\src\\lsm6dsr_reg.o",
 		"ndk\\src\\main.o",

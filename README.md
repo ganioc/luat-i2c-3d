@@ -1,4 +1,4 @@
-## LSM6DSR读取倾角
+## LSM6DSR 读取倾角
 返回值为弧度值*1000000, tilt x, tilt y, tilt z,
 
 ## 使用方法
@@ -16,3 +16,9 @@ if wakeup == 1 then
     print("Tilt detected",nx,ny,nz)
 end
 ```
+
+## QMI8658如何读取倾角呢？
+
+
+
+
