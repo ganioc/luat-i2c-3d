@@ -76,7 +76,7 @@ sys.taskInit(function()
 
         while true do
             -- user.helloworld()
-            sys.wait(1000)
+            sys.wait(100)
             user.QMI8658_read_temp()
             user.QMI8658_read_timestamp()
             -- pcf8563.dumpReg(rtc_i2c_handle)

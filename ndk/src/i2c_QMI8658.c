@@ -1,6 +1,8 @@
 #include "../include/i2c_QMI8658.h"
 #include "../include/qmi8658_reg.h"
+#include "../include/kalman.h"
 
+static Kalman_t filterAccX, filterAccY, filterAccZ;
 
 /* success returns 0 */
 int qmi_i2c_read( UINT8 reg, UINT8 *data, UINT16 len){
@@ -197,6 +199,22 @@ int QMI8658_get_id(void){
 
     return 0;
 }
+int QMI8658_polling_begin(void *L){
+    OPENAT_lua_print("QMI8658_polling_begin");
+
+    QMI8658_get_id();
+    QMI8658_config_reg();
+    QMI8658_enableSensors(1);
+
+    OPENAT_sleep(50);
+
+    read_Qmi8568_dump_reg(L);
+
+    Kalman_init(&filterAccX, KALMAN_R, KALMAN_Q, KALMAN_A,KALMAN_B, KALMAN_C);
+    Kalman_init(&filterAccY, KALMAN_R, KALMAN_Q, KALMAN_A,KALMAN_B, KALMAN_C);
+    Kalman_init(&filterAccZ, KALMAN_R, KALMAN_Q, KALMAN_A, KALMAN_B, KALMAN_C);
+    return 1;
+}
 int QMI8658_polling_acc(void *L){
     uint8 status, acc_x[2],acc_y[2],acc_z[2];
     uint8 ready = 0;
@@ -215,8 +233,13 @@ int QMI8658_polling_acc(void *L){
         qmi_i2c_read(Qmi8658Register_Az_H,&acc_z[1],1);
 
         data_raw_acceleration[0] = (int16)((int16)acc_x[1]<<8|acc_x[0]);
-        data_raw_acceleration[1] =  (int16)((int16)acc_y[1]<<8|acc_y[0]);;
-        data_raw_acceleration[2] =  (int16)((int16)acc_z[1]<<8|acc_z[0]);;
+        data_raw_acceleration[1] =  (int16)((int16)acc_y[1]<<8|acc_y[0]);
+        data_raw_acceleration[2] =  (int16)((int16)acc_z[1]<<8|acc_z[0]);
+
+        // Kalman filter the data
+        data_raw_acceleration[0] = Kalman_filter(&filterAccX,data_raw_acceleration[0], 0);
+        data_raw_acceleration[1] = Kalman_filter(&filterAccY,data_raw_acceleration[1], 0);
+        data_raw_acceleration[2] = Kalman_filter(&filterAccZ,data_raw_acceleration[2], 0); 
 
     }
     lua_pushinteger(L, ready);
@@ -225,18 +248,7 @@ int QMI8658_polling_acc(void *L){
     lua_pushinteger(L, (int) (data_raw_acceleration[2]));
     return 4;
 }
-int QMI8658_polling_begin(void *L){
-    OPENAT_lua_print("QMI8658_polling_begin");
 
-    QMI8658_get_id();
-    QMI8658_config_reg();
-    QMI8658_enableSensors(1);
-
-    OPENAT_sleep(50);
-
-    read_Qmi8568_dump_reg(L);
-    return 1;
-}
 
 
 
