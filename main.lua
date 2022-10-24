@@ -93,6 +93,10 @@ sys.taskInit(function()
             -- if wakeup == 1 then
             --     print("ACC:",tiltx,tilty,tiltz)
             -- end
+            local ready,accx,accy,accz = user.QMI8658_polling_acc()
+            if ready == 1 then
+                print("ACC:",accx,accy,accz)
+            end
 
         end
     end

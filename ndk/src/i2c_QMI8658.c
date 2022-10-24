@@ -64,7 +64,7 @@ int read_QMI8658_WHOAMI(void *L)
 
     return 0;
 }
-int read_QMI8658_temp(void *L){
+int QMI8658_read_temp(void *L){
     UINT8 reg = Qmi8658Register_Tempearture_L;
     byte1bit16_t data_raw;
     int16 data;
@@ -105,7 +105,7 @@ int read_Qmi8568_dump_reg(void *L){
         buf[0],buf[1],buf[2],buf[3],buf[4],buf[5],buf[6],buf[7]);
     return 0;  
 }
-int read_QMI8658_timestamp(void*L){
+int QMI8658_read_timestamp(void*L){
     uint8	buf[3];
 	uint32 timestamp;
     UINT8 reg;
@@ -197,6 +197,34 @@ int QMI8658_get_id(void){
 
     return 0;
 }
+int QMI8658_polling_acc(void *L){
+    uint8 status, acc_x[2],acc_y[2],acc_z[2];
+    uint8 ready = 0;
+    int16 data_raw_acceleration[3];
+    float acceleration_mg[3]={0,0,0};
+
+    qmi_i2c_read(Qmi8658Register_Status0, &status, 1);
+
+    if(status&0x01){
+        ready = 1;
+        qmi_i2c_read(Qmi8658Register_Ax_L,&acc_x[0],1);
+        qmi_i2c_read(Qmi8658Register_Ax_H,&acc_x[1],1);
+        qmi_i2c_read(Qmi8658Register_Ay_L,&acc_y[0],1);
+        qmi_i2c_read(Qmi8658Register_Ay_H,&acc_y[1],1);
+        qmi_i2c_read(Qmi8658Register_Az_L,&acc_z[0],1);
+        qmi_i2c_read(Qmi8658Register_Az_H,&acc_z[1],1);
+
+        data_raw_acceleration[0] = (int16)((int16)acc_x[1]<<8|acc_x[0]);
+        data_raw_acceleration[1] =  (int16)((int16)acc_y[1]<<8|acc_y[0]);;
+        data_raw_acceleration[2] =  (int16)((int16)acc_z[1]<<8|acc_z[0]);;
+
+    }
+    lua_pushinteger(L, ready);
+    lua_pushinteger(L, (int) (data_raw_acceleration[0]));
+    lua_pushinteger(L, (int) (data_raw_acceleration[1]));
+    lua_pushinteger(L, (int) (data_raw_acceleration[2]));
+    return 4;
+}
 int QMI8658_polling_begin(void *L){
     OPENAT_lua_print("QMI8658_polling_begin");
 
@@ -207,23 +235,8 @@ int QMI8658_polling_begin(void *L){
     OPENAT_sleep(50);
 
     read_Qmi8568_dump_reg(L);
-
-    // read_QMI8658_WHOAMI(L);
-    read_QMI8658_temp(L);
-    read_QMI8658_timestamp(L);
-    // read_Qmi8568_dump_reg(L);
-
     return 1;
 }
-int QMI8658_polling_check(void *L){
-
-    return 1;
-}
-int QMI8658_polling_acc(void *L){
-
-    return 1;
-}
-
 
 
 

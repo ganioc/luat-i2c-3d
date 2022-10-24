@@ -73,10 +73,9 @@ luaL_Reg user_lib[] = {
 	{"LSM6DSR_polling_check", LSM6DSR_polling_check},
 	{"LSM6DSR_polling_acc", LSM6DSR_polling_acc},
 	{"QMI8658_polling_begin", QMI8658_polling_begin},
-	{"QMI8658_polling_check", QMI8658_polling_check},
 	{"QMI8658_polling_acc", QMI8658_polling_acc},
-	{"QMI8658_read_temp", read_QMI8658_temp},
-	{"QMI8658_read_timestamp", read_QMI8658_timestamp},
+	{"QMI8658_read_temp", QMI8658_read_temp},
+	{"QMI8658_read_timestamp", QMI8658_read_timestamp},
 	{NULL, NULL}};
 	
 /*入口函数*/
