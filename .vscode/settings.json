@@ -1,5 +1,6 @@
 {
     "files.associations": {
         "i2c_lsm6dsr.h": "c"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }

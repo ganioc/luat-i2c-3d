@@ -18,6 +18,7 @@ typedef union{
 int QMI8658_polling_begin(void *L);
 int QMI8658_polling_check(void *L);
 int QMI8658_polling_acc(void *L);
-
+int read_QMI8658_temp(void *L);
+int read_QMI8658_timestamp(void*L);
 
 #endif

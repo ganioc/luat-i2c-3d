@@ -81,14 +81,137 @@ int read_QMI8658_temp(void *L){
 
     return 0;
 }
+int read_Qmi8568_dump_reg(void *L){
+    // read out registers
+    uint8 buf[8];
+    UINT8 reg = Qmi8658Register_Ctrl1;
+    qmi_i2c_read(reg, &buf[0],1);
+    reg = Qmi8658Register_Ctrl2;
+    qmi_i2c_read(reg, &buf[1],1);
+    reg = Qmi8658Register_Ctrl3;
+    qmi_i2c_read(reg, &buf[2],1);
+    reg = Qmi8658Register_Ctrl4;
+    qmi_i2c_read(reg, &buf[3],1);
+    reg = Qmi8658Register_Ctrl5;
+    qmi_i2c_read(reg, &buf[4],1);
+    reg = Qmi8658Register_Ctrl6;
+    qmi_i2c_read(reg, &buf[5],1);
+    reg = Qmi8658Register_Ctrl7;
+    qmi_i2c_read(reg, &buf[6],1);
+    reg = Qmi8658Register_Ctrl8;
+    qmi_i2c_read(reg, &buf[7],1);
+
+    OPENAT_lua_print("dump: %02x %02x %02x %02x %02x %02x %02x %02x", 
+        buf[0],buf[1],buf[2],buf[3],buf[4],buf[5],buf[6],buf[7]);
+    return 0;  
+}
+int read_QMI8658_timestamp(void*L){
+    uint8	buf[3];
+	uint32 timestamp;
+    UINT8 reg;
+    reg = Qmi8658Register_Timestamp_L;
+    qmi_i2c_read( reg, &buf[0], 1);
+    reg = Qmi8658Register_Timestamp_M;
+    qmi_i2c_read( reg, &buf[1], 1);
+    reg = Qmi8658Register_Timestamp_H;
+    qmi_i2c_read( reg, &buf[1], 1);
+    OPENAT_lua_print("timestamp %02x %02x %02x",  buf[0], buf[1], buf[2]);
+
+    return 0;
+}
+int QMI8658_enableSensors(uint8 enableFlag){
+    uint8 data;
+    data = enableFlag;
+    qmi_i2c_write(Qmi8658Register_Ctrl7,&data,1);
+    return 0;
+}
+int QMI8658_config_acc(enum qmi8658_AccRange range, enum qmi8658_AccOdr odr,enum qmi8658_LpfConfig lpfEnable,enum qmi8658_StConfig stEnable){
+    uint8 ctrl_data;
+
+    ctrl_data = range | odr;
+    qmi_i2c_write(Qmi8658Register_Ctrl2, &ctrl_data,1);
+
+    // omit lpfConfig mode,
+    qmi_i2c_read(Qmi8658Register_Ctrl5, &ctrl_data, 1);
+    ctrl_data&=0xF0;
+    if(lpfEnable == Qmi8658Lpf_Enable){
+        ctrl_data |= A_LSP_MODE_2;
+        ctrl_data |= 0x01;
+    }else{
+        ctrl_data &= ~0x01;
+    }
+    qmi_i2c_write(Qmi8658Register_Ctrl5, &ctrl_data, 1);
+    return 0;
+}
+int QMI8658_config_reg(){
+    QMI8658_enableSensors(0);
+    QMI8658_config_acc(Qmi8658AccRange_2g, Qmi8658AccOdr_31_25Hz, Qmi8658Lpf_Disable,Qmi8658St_Disable );
+    return 0;
+}
+int QMI8658_on_command_cali(void){
+    uint8 data;
+    OPENAT_lua_print("qmi8658 on demand cali started");
+    data = 0xb0;
+    qmi_i2c_write(Qmi8658Register_Reset,&data,1);
+    OPENAT_sleep(10);
+    data = qmi8658_Ctrl9_Cmd_On_Demand_Cali;
+    qmi_i2c_write(Qmi8658Register_Ctrl9, &data, 1);
+    OPENAT_sleep(2200);
+    data = qmi8658_Ctrl9_Cmd_NOP;
+    qmi_i2c_write(Qmi8658Register_Ctrl9, &data, 1);
+    OPENAT_sleep(100);
+    OPENAT_lua_print("qmi8658 on demand cali done");
+    return 0;
+}
+int QMI8658_get_id(void){
+    uint8 iCount = 0,data;
+    uint8 qmi8658_chip_id = 0;
+    uint8 qmi8658_revision_id;
+    uint8 firmware_id[3];
+    uint8 uuid[6];
+
+    while(qmi8658_chip_id != 0x05){
+        qmi_i2c_read(Qmi8658Register_WhoAmI, &qmi8658_chip_id,1);
+        OPENAT_lua_print("WhoAmI %02x", qmi8658_chip_id);
+    }
+
+    QMI8658_on_command_cali();
+    data = 0x60|QMI8658_INT2_ENABLE |QMI8658_INT1_ENABLE;
+    qmi_i2c_write(Qmi8658Register_Ctrl1, &data, 1);
+    qmi_i2c_read(Qmi8658Register_Revision, &qmi8658_revision_id, 1);
+    qmi_i2c_read(Qmi8658Register_firmware_id, &firmware_id[0], 1);
+    qmi_i2c_read(Qmi8658Register_firmware_id + 1, &firmware_id[1], 1);
+    qmi_i2c_read(Qmi8658Register_firmware_id + 2, &firmware_id[2], 1);
+    qmi_i2c_read(Qmi8658Register_uuid, &uuid[0],1);
+    qmi_i2c_read(Qmi8658Register_uuid+1, &uuid[1],1);
+    qmi_i2c_read(Qmi8658Register_uuid+2, &uuid[2],1);
+    qmi_i2c_read(Qmi8658Register_uuid+3, &uuid[3],1);
+    qmi_i2c_read(Qmi8658Register_uuid+4, &uuid[4],1);
+    qmi_i2c_read(Qmi8658Register_uuid+5, &uuid[5],1);
+    data = 0;
+    qmi_i2c_write(Qmi8658Register_Ctrl7,&data, 1);
+    // data = 0xc0;
+    // qmi_i2c_write(Qmi8658Register_Ctrl8，&data, 1);
+    OPENAT_lua_print("revision %02x", qmi8658_revision_id);
+    OPENAT_lua_print("firmware id: %02x %02x  %02x", firmware_id[0], firmware_id[1], firmware_id[2]);
+
+    return 0;
+}
 int QMI8658_polling_begin(void *L){
-
-
     OPENAT_lua_print("QMI8658_polling_begin");
-    
-    
-    read_QMI8658_WHOAMI(L);
+
+    QMI8658_get_id();
+    QMI8658_config_reg();
+    QMI8658_enableSensors(1);
+
+    OPENAT_sleep(50);
+
+    read_Qmi8568_dump_reg(L);
+
+    // read_QMI8658_WHOAMI(L);
     read_QMI8658_temp(L);
+    read_QMI8658_timestamp(L);
+    // read_Qmi8568_dump_reg(L);
 
     return 1;
 }

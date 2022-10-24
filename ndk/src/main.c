@@ -75,6 +75,8 @@ luaL_Reg user_lib[] = {
 	{"QMI8658_polling_begin", QMI8658_polling_begin},
 	{"QMI8658_polling_check", QMI8658_polling_check},
 	{"QMI8658_polling_acc", QMI8658_polling_acc},
+	{"QMI8658_read_temp", read_QMI8658_temp},
+	{"QMI8658_read_timestamp", read_QMI8658_timestamp},
 	{NULL, NULL}};
 	
 /*入口函数*/
