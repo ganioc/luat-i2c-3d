@@ -19,6 +19,10 @@ end
 
 ## QMI8658如何读取倾角呢？
 
+QMI8658_polling_acc(),
+获取到gx,gy,gz归一化的值*1000000, 6个0, 
 
+int QMI8658_polling_z_tilt(void *L),
+获取到相对于水平面的Z轴的倾斜角度(弧度)*1000000, 
 
 

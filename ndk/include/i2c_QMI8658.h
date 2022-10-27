@@ -9,6 +9,8 @@
 
 #define QMI8658_WHO_AM_I 
 
+#define QMI8658_MAX_DIGITS  1000000
+
 typedef union{
   INT16 i16bit;
   UINT8 u8bit[2];
@@ -21,4 +23,5 @@ int QMI8658_polling_acc(void *L);
 int QMI8658_read_temp(void *L);
 int QMI8658_read_timestamp(void*L);
 int QMI8658_polling_acc(void *L);
+int QMI8658_polling_z_tilt(void *L);
 #endif

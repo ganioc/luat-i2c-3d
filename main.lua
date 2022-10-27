@@ -97,6 +97,10 @@ sys.taskInit(function()
             if ready == 1 then
                 print("ACC:",accx,accy,accz)
             end
+            local ready2,tiltx,tilty,tiltz = user.QMI8658_polling_z_tilt()
+            if ready == 1 then
+                print("TILT:",tiltx,tilty,tiltz)
+            end
 
         end
     end

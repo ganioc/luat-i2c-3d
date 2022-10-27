@@ -43,10 +43,9 @@
 		"ndk\\src",
 		"ndk\\build\\user.lib"
 	],
-	"modulePort": "COM47",
+	"modulePort": "COM51",
 	"ignore": [
 		"ndk\\src\\lsm6dsr_reg.o",
-		"ndk\\src\\main.o",
 		"README.md",
 		"ndk\\Makefile",
 		"ndk\\src\\Makefile"
