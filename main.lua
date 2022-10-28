@@ -73,7 +73,12 @@ sys.taskInit(function()
 
         -- user.LSM6DSR_polling_begin();
         -- 31Hz update rate
-        user.QMI8658_polling_begin();
+        local rtn = user.QMI8658_polling_begin();
+        if rtn == 1 then
+            print("QmI8568 init OK")
+        else 
+            print("QMI8568 init FAIL")
+        end
 
         while true do
             -- user.helloworld()
@@ -97,12 +102,12 @@ sys.taskInit(function()
             -- end
 
 
-            local ready,accx,accy,accz = user.QMI8658_polling_acc()
-            if ready == 1 then
-                print("ACC:",accx,accy,accz)
-            end
+            -- local ready,accx,accy,accz = user.QMI8658_polling_acc()
+            -- if ready == 1 then
+            --     print("ACC:",accx,accy,accz)
+            -- end
 
-            sys.wait(40)
+            -- sys.wait(40)
 
             local ready2,tiltx,tilty,tiltz, num_appending = user.QMI8658_polling_z_tilt()
             if ready2 == 1 then

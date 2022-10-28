@@ -36,38 +36,13 @@ int qmi_i2c_write(UINT8 reg, UINT8 *data, UINT16 len)
             data,
             (UINT32)len) != len)
     {
+        OPENAT_lua_print("iot_i2c_write error");
         return -1;
     }
 
     return 0;
 }
-int read_QMI8658_WHOAMI(void *L)
-{
-    UINT8 reg = Qmi8658Register_WhoAmI;
-    UINT8 data;
-    int rtn = -1;
 
-    for (int i = 0; i < 3; i++)
-    {
-        rtn = qmi_i2c_read(reg, &data, 1);
-
-        if (rtn == 0)
-        {
-            break;
-        }
-    }
-
-    if (rtn == 0)
-    {
-        OPENAT_lua_print("Read who am i, %02x", data);
-    }
-    else
-    {
-        OPENAT_lua_print("Read who am i failed %02x", data);
-    }
-
-    return 0;
-}
 int QMI8658_read_temp(void *L)
 {
     UINT8 reg = Qmi8658Register_Tempearture_L;
@@ -86,17 +61,7 @@ int QMI8658_read_temp(void *L)
 
     return 0;
 }
-int read_Qmi8568_dump_reg(void *L)
-{
-    // read out registers
-    uint8 buf[8];
-    UINT8 reg = Qmi8658Register_Ctrl1;
-    qmi_i2c_read(reg, &buf[0], 8);
 
-    OPENAT_lua_print("dump: %02x %02x %02x %02x %02x %02x %02x %02x",
-                     buf[0], buf[1], buf[2], buf[3], buf[4], buf[5], buf[6], buf[7]);
-    return 0;
-}
 int QMI8658_read_timestamp(void *L)
 {
     uint8 buf[3];
@@ -141,16 +106,11 @@ int QMI8658_config_acc(enum qmi8658_AccRange range, enum qmi8658_AccOdr odr, enu
     qmi_i2c_write(Qmi8658Register_Ctrl5, &ctrl_data, 1);
     return 0;
 }
-int QMI8658_config_reg()
-{
-    QMI8658_enableSensors(0);
-    QMI8658_config_acc(Qmi8658AccRange_2g, Qmi8658AccOdr_31_25Hz, Qmi8658Lpf_Disable, Qmi8658St_Disable);
-    return 0;
-}
+
 int QMI8658_on_command_cali(void)
 {
     uint8 data;
-    OPENAT_lua_print("qmi8658 on demand cali started");
+    // OPENAT_lua_print("qmi8658 on demand cali started");
     data = 0xb0;
     qmi_i2c_write(Qmi8658Register_Reset, &data, 1);
     OPENAT_sleep(10);
@@ -160,63 +120,60 @@ int QMI8658_on_command_cali(void)
     data = qmi8658_Ctrl9_Cmd_NOP;
     qmi_i2c_write(Qmi8658Register_Ctrl9, &data, 1);
     OPENAT_sleep(100);
-    OPENAT_lua_print("qmi8658 on demand cali done");
+    // OPENAT_lua_print("qmi8658 on demand cali done");
     return 0;
 }
-int QMI8658_get_id(void)
-{
-    uint8 iCount = 0, data;
-    uint8 qmi8658_chip_id = 0;
-    uint8 qmi8658_revision_id;
-    uint8 firmware_id[3];
-    uint8 uuid[6];
 
-    while (qmi8658_chip_id != 0x05)
-    {
-        qmi_i2c_read(Qmi8658Register_WhoAmI, &qmi8658_chip_id, 1);
-        OPENAT_lua_print("WhoAmI %02x", qmi8658_chip_id);
-    }
-
-    QMI8658_on_command_cali();
-    data = 0x60 | QMI8658_INT2_ENABLE | QMI8658_INT1_ENABLE;
-    qmi_i2c_write(Qmi8658Register_Ctrl1, &data, 1);
-    qmi_i2c_read(Qmi8658Register_Revision, &qmi8658_revision_id, 1);
-    qmi_i2c_read(Qmi8658Register_firmware_id, &firmware_id[0], 1);
-    qmi_i2c_read(Qmi8658Register_firmware_id + 1, &firmware_id[1], 1);
-    qmi_i2c_read(Qmi8658Register_firmware_id + 2, &firmware_id[2], 1);
-    qmi_i2c_read(Qmi8658Register_uuid, &uuid[0],6);
-
-    data = 0;
-    qmi_i2c_write(Qmi8658Register_Ctrl7, &data, 1);
-    // data = 0xc0;
-    // qmi_i2c_write(Qmi8658Register_Ctrl8，&data, 1);
-    OPENAT_lua_print("revision %02x", qmi8658_revision_id);
-    OPENAT_lua_print("firmware id: %02x %02x  %02x", firmware_id[0], firmware_id[1], firmware_id[2]);
-
-    return 0;
-}
 int QMI8658_polling_begin(void *L)
 {
+    uint8 rtn=1, times=3,data;
+    uint8 qmi8658_chip_id = 0;
     OPENAT_lua_print("QMI8658_polling_begin");
 
-    QMI8658_get_id();
-    QMI8658_config_reg();
+    while (qmi8658_chip_id != 0x05 && (times--) > 0 )
+    {
+        qmi_i2c_read(Qmi8658Register_WhoAmI, &qmi8658_chip_id, 1);
+        // OPENAT_lua_print("WhoAmI %02x", qmi8658_chip_id);
+    }
+    if(times <= 0){
+         OPENAT_lua_print("Can not find QMI8568 chip id");
+         rtn = 0;
+         goto polling_begin_end;
+    }
+    
+    if(QMI8658_on_command_cali() != 0){
+        OPENAT_lua_print("Can not calibrate QMI8568");
+        rtn = 0;
+        goto polling_begin_end;
+    }
+
+    data = 0x60 | QMI8658_INT2_ENABLE | QMI8658_INT1_ENABLE;
+    qmi_i2c_write(Qmi8658Register_Ctrl1, &data, 1);
+
+    QMI8658_enableSensors(0);
+    if(QMI8658_config_acc(Qmi8658AccRange_2g, Qmi8658AccOdr_31_25Hz, Qmi8658Lpf_Disable, Qmi8658St_Disable)!=0){
+        OPENAT_lua_print("Can not config QMI8568");
+        rtn = 0;
+        goto polling_begin_end;
+    }
     QMI8658_enableSensors(1);
 
     OPENAT_sleep(50);
 
-    read_Qmi8568_dump_reg(L);
+
+polling_begin_end:
 
     Kalman_init(&filterAccX, KALMAN_R, KALMAN_Q, KALMAN_A, KALMAN_B, KALMAN_C);
     Kalman_init(&filterAccY, KALMAN_R, KALMAN_Q, KALMAN_A, KALMAN_B, KALMAN_C);
     Kalman_init(&filterAccZ, KALMAN_R, KALMAN_Q, KALMAN_A, KALMAN_B, KALMAN_C);
 
-    lua_pushinteger(L, 1);
+
+    lua_pushinteger(L, rtn);
     return 1;
 }
 int QMI8658_read_acc()
 {
-    uint8 acc_x[2], acc_y[2], acc_z[2], acc[6];
+    uint8  acc[6];
 
     float acceleration_mg[3] = {0, 0, 0};
 
@@ -255,10 +212,6 @@ int QMI8658_polling_acc(void *L)
     }
 
     lua_pushinteger(L, ready);
-    // lua_pushinteger(L, (int)(data_raw_acceleration[0]));
-    // lua_pushinteger(L, (int)(data_raw_acceleration[1]));
-    // lua_pushinteger(L, (int)(data_raw_acceleration[2]));
-
 
     lua_pushinteger(L, (int)(acceleration_norm[0] * QMI8658_MAX_DIGITS));
     lua_pushinteger(L, (int)(acceleration_norm[1] * QMI8658_MAX_DIGITS));
@@ -269,7 +222,7 @@ int QMI8658_polling_acc(void *L)
 int QMI8658_polling_z_tilt(void *L)
 {
     uint8 ready = 0, status;
-    double acc_sum = 0;
+    // double acc_sum = 0;
     float acceleration_tilt[3] = {0, 0, 0};
 
     qmi_i2c_read(Qmi8658Register_Status0, &status, 1);
@@ -287,13 +240,9 @@ int QMI8658_polling_z_tilt(void *L)
     }
 
     lua_pushinteger(L, ready);
-    lua_Number acc_0 = acceleration_tilt[0];
-    lua_Number acc_1 = acceleration_tilt[1];
-    lua_Number acc_2 = acceleration_tilt[2];
 
     lua_pushinteger(L, acceleration_tilt[0]*QMI8658_MAX_DIGITS);
-    lua_pushinteger(L, acceleration_tilt[1]*QMI8658_MAX_DIGITS);
-    // lua_pushinteger(L, acceleration_tilt[2]*QMI8658_MAX_DIGITS);
+    lua_pushnumber(L, acceleration_tilt[1]*QMI8658_MAX_DIGITS);
     lua_pushnumber(L, acceleration_tilt[2]);
     lua_pushnumber(L, 1.322321);
 
