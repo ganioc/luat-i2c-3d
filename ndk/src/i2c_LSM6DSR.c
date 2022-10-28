@@ -23,9 +23,9 @@ INT32 st_i2c_read(void *handle, UINT8 reg, UINT8 *data, UINT16 len)
             local_handle->addr,
             &local_reg,
             data,
-            (UINT32)len) != 1)
+            (UINT32)len) != len)
     {
-        OPENAT_lua_print("iot_i2c_read error");
+        OPENAT_lua_print("delay");
         return -1;
     }
     return 0;
@@ -43,7 +43,7 @@ INT32 st_i2c_write(void *handle, UINT8 reg, UINT8 *data, UINT16 len)
             local_handle->addr,
             &local_reg,
             data,
-            (UINT32)len) != 1)
+            (UINT32)len) != len)
     {
         return -1;
     }
@@ -360,12 +360,12 @@ int Get_X_AxesRaw(void *L)
     //     goto END_GET_X;
     // }
 
-    lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_L_A, &data_raw.u8bit[0], 1);
-    lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_H_A, &data_raw.u8bit[1], 1);
-    lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTY_L_A, &data_raw.u8bit[2], 1);
-    lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTY_H_A, &data_raw.u8bit[3], 1);
-    lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTZ_L_A, &data_raw.u8bit[4], 1);
-    lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTZ_H_A, &data_raw.u8bit[5], 1);
+    lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_L_A, &data_raw.u8bit[0], 6);
+    // lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_H_A, &data_raw.u8bit[1], 1);
+    // lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTY_L_A, &data_raw.u8bit[2], 1);
+    // lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTY_H_A, &data_raw.u8bit[3], 1);
+    // lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTZ_L_A, &data_raw.u8bit[4], 1);
+    // lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTZ_H_A, &data_raw.u8bit[5], 1);
 
     /* Format the data. */
     Value[0] = data_raw.i16bit[0];
@@ -396,12 +396,12 @@ int Get_G_AxesRaw(void *L)
     //     goto END_GET_G;
     // }
 
-    lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_L_G, &data_raw.u8bit[0], 1);
-    lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_H_G, &data_raw.u8bit[1], 1);
-    lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTY_L_G, &data_raw.u8bit[2], 1);
-    lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTY_H_G, &data_raw.u8bit[3], 1);
-    lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTZ_L_G, &data_raw.u8bit[4], 1);
-    lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTZ_H_G, &data_raw.u8bit[5], 1);
+    lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_L_G, &data_raw.u8bit[0], 6);
+    // lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_H_G, &data_raw.u8bit[1], 1);
+    // lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTY_L_G, &data_raw.u8bit[2], 1);
+    // lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTY_H_G, &data_raw.u8bit[3], 1);
+    // lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTZ_L_G, &data_raw.u8bit[4], 1);
+    // lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTZ_H_G, &data_raw.u8bit[5], 1);
 
     /* Format the data. */
     Value[0] = data_raw.i16bit[0];
@@ -626,18 +626,18 @@ int LSM6DSR_polling_check(void *L)
     /* Read output only if new xl value is available */
     lsm6dsr_xl_flag_data_ready_get(&reg_ctx, &reg);
 
-    if (reg)
+    if (reg && lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_L_A, &data_raw.u8bit[0], 6) == 0)
     {
         rtn = 1;
         /* Read acceleration field data */
         // memset(data_raw_acceleration, 0x00, 3 * sizeof(int16));
         // lsm6dsr_acceleration_raw_get(&reg_ctx, data_raw_acceleration);
-        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_L_A, &data_raw.u8bit[0], 1);
-        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_H_A, &data_raw.u8bit[1], 1);
-        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTY_L_A, &data_raw.u8bit[2], 1);
-        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTY_H_A, &data_raw.u8bit[3], 1);
-        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTZ_L_A, &data_raw.u8bit[4], 1);
-        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTZ_H_A, &data_raw.u8bit[5], 1);
+        // lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_L_A, &data_raw.u8bit[0], 6);
+        // lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_H_A, &data_raw.u8bit[1], 1);
+        // lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTY_L_A, &data_raw.u8bit[2], 1);
+        // lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTY_H_A, &data_raw.u8bit[3], 1);
+        // lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTZ_L_A, &data_raw.u8bit[4], 1);
+        // lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTZ_H_A, &data_raw.u8bit[5], 1);
         /* Format the data. */
         data_raw_acceleration[0] = data_raw.i16bit[0];
         data_raw_acceleration[1] = data_raw.i16bit[1];
@@ -690,12 +690,9 @@ int LSM6DSR_polling_acc(void *L){
         /* Read acceleration field data */
         // memset(data_raw_acceleration, 0x00, 3 * sizeof(int16));
         // lsm6dsr_acceleration_raw_get(&reg_ctx, data_raw_acceleration);
-        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_L_A, &data_raw.u8bit[0], 1);
-        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_H_A, &data_raw.u8bit[1], 1);
-        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTY_L_A, &data_raw.u8bit[2], 1);
-        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTY_H_A, &data_raw.u8bit[3], 1);
-        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTZ_L_A, &data_raw.u8bit[4], 1);
-        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTZ_H_A, &data_raw.u8bit[5], 1);
+ 
+        lsm6dsr_read_reg(&reg_ctx, LSM6DSR_OUTX_L_A, &data_raw.u8bit[0],6);
+
         /* Format the data. */
         data_raw_acceleration[0] = data_raw.i16bit[0];
         data_raw_acceleration[1] = data_raw.i16bit[1];

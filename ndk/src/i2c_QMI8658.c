@@ -15,7 +15,7 @@ int qmi_i2c_read(UINT8 reg, UINT8 *data, UINT16 len)
             QMI8658_I2C_ADDR,
             &local_reg,
             data,
-            (UINT32)len) != 1)
+            (UINT32)len) != len)
     {
         OPENAT_lua_print("iot_i2c_read error");
         return -1;
@@ -34,7 +34,7 @@ int qmi_i2c_write(UINT8 reg, UINT8 *data, UINT16 len)
             QMI8658_I2C_ADDR,
             &local_reg,
             data,
-            (UINT32)len) != 1)
+            (UINT32)len) != len)
     {
         return -1;
     }
@@ -76,7 +76,7 @@ int QMI8658_read_temp(void *L)
     int rtn = -1;
     float temp_f;
 
-    rtn = qmi_i2c_read(reg, &data_raw.u8bit[0], 1);
+    rtn = qmi_i2c_read(reg, &data_raw.u8bit[0],1);
     reg = Qmi8658Register_Tempearture_H;
     qmi_i2c_read(reg, &data_raw.u8bit[1], 1);
     data = data_raw.i16bit;

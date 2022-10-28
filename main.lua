@@ -46,8 +46,8 @@ sys.taskInit(function()
     sys.wait(1000)
     print("---------------------")
     -- enable RTC
-    -- pmd.ldoset(2, pmd.LDO_VMMC)
-    -- setOutputFnc = pins.setup(pio.P0_27, 1)
+    pmd.ldoset(2, pmd.LDO_VMMC)
+    setOutputFnc = pins.setup(pio.P0_27, 1)
 
 
     sys.wait(1000)
@@ -71,14 +71,14 @@ sys.taskInit(function()
         -- rtn = user.LSM6DSR_enable_G();
         -- print("enable_G - rtn", rtn)
 
-        -- user.LSM6DSR_polling_begin();
-        user.QMI8658_polling_begin();
+        user.LSM6DSR_polling_begin();
+        -- user.QMI8658_polling_begin();
 
         while true do
             -- user.helloworld()
             sys.wait(100)
-            user.QMI8658_read_temp()
-            user.QMI8658_read_timestamp()
+            -- user.QMI8658_read_temp()
+            -- user.QMI8658_read_timestamp()
             -- pcf8563.dumpReg(rtc_i2c_handle)
             -- local time = pcf8563.getTime(rtc_i2c_handle)
             -- for k,v in pairs(time) do
@@ -89,18 +89,19 @@ sys.taskInit(function()
             -- print("X axes: ", num1, num2,num3)
             -- local gnum1,gnum2,gnum3 = user.Get_G_AxesRaw();
             -- print("G axes: ", gnum1, gnum2,gnum3)
-            -- local wakeup,tiltx, tilty, tiltz = user.LSM6DSR_polling_acc();
-            -- if wakeup == 1 then
-            --     print("ACC:",tiltx,tilty,tiltz)
+            sys.wait(100)
+            local wakeup,tiltx, tilty, tiltz = user.LSM6DSR_polling_acc();
+            if wakeup == 1 then
+                print("ACC:",tiltx,tilty,tiltz)
+            end
+            -- local ready,accx,accy,accz = user.QMI8658_polling_acc()
+            -- if ready == 1 then
+            --     print("ACC:",accx,accy,accz)
             -- end
-            local ready,accx,accy,accz = user.QMI8658_polling_acc()
-            if ready == 1 then
-                print("ACC:",accx,accy,accz)
-            end
-            local ready2,tiltx,tilty,tiltz = user.QMI8658_polling_z_tilt()
-            if ready == 1 then
-                print("TILT:",tiltx,tilty,tiltz)
-            end
+            -- local ready2,tiltx,tilty,tiltz = user.QMI8658_polling_z_tilt()
+            -- if ready == 1 then
+            --     print("TILT:",tiltx,tilty,tiltz)
+            -- end
 
         end
     end
