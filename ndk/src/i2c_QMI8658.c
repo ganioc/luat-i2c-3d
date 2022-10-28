@@ -91,21 +91,7 @@ int read_Qmi8568_dump_reg(void *L)
     // read out registers
     uint8 buf[8];
     UINT8 reg = Qmi8658Register_Ctrl1;
-    qmi_i2c_read(reg, &buf[0], 1);
-    reg = Qmi8658Register_Ctrl2;
-    qmi_i2c_read(reg, &buf[1], 1);
-    reg = Qmi8658Register_Ctrl3;
-    qmi_i2c_read(reg, &buf[2], 1);
-    reg = Qmi8658Register_Ctrl4;
-    qmi_i2c_read(reg, &buf[3], 1);
-    reg = Qmi8658Register_Ctrl5;
-    qmi_i2c_read(reg, &buf[4], 1);
-    reg = Qmi8658Register_Ctrl6;
-    qmi_i2c_read(reg, &buf[5], 1);
-    reg = Qmi8658Register_Ctrl7;
-    qmi_i2c_read(reg, &buf[6], 1);
-    reg = Qmi8658Register_Ctrl8;
-    qmi_i2c_read(reg, &buf[7], 1);
+    qmi_i2c_read(reg, &buf[0], 8);
 
     OPENAT_lua_print("dump: %02x %02x %02x %02x %02x %02x %02x %02x",
                      buf[0], buf[1], buf[2], buf[3], buf[4], buf[5], buf[6], buf[7]);
@@ -198,12 +184,8 @@ int QMI8658_get_id(void)
     qmi_i2c_read(Qmi8658Register_firmware_id, &firmware_id[0], 1);
     qmi_i2c_read(Qmi8658Register_firmware_id + 1, &firmware_id[1], 1);
     qmi_i2c_read(Qmi8658Register_firmware_id + 2, &firmware_id[2], 1);
-    qmi_i2c_read(Qmi8658Register_uuid, &uuid[0], 1);
-    qmi_i2c_read(Qmi8658Register_uuid + 1, &uuid[1], 1);
-    qmi_i2c_read(Qmi8658Register_uuid + 2, &uuid[2], 1);
-    qmi_i2c_read(Qmi8658Register_uuid + 3, &uuid[3], 1);
-    qmi_i2c_read(Qmi8658Register_uuid + 4, &uuid[4], 1);
-    qmi_i2c_read(Qmi8658Register_uuid + 5, &uuid[5], 1);
+    qmi_i2c_read(Qmi8658Register_uuid, &uuid[0],6);
+
     data = 0;
     qmi_i2c_write(Qmi8658Register_Ctrl7, &data, 1);
     // data = 0xc0;
@@ -232,35 +214,24 @@ int QMI8658_polling_begin(void *L)
 }
 int QMI8658_read_acc()
 {
-    uint8 acc_x[2], acc_y[2], acc_z[2];
+    uint8 acc_x[2], acc_y[2], acc_z[2], acc[6];
 
     float acceleration_mg[3] = {0, 0, 0};
 
-    // ready = 1;
-    if (qmi_i2c_read(Qmi8658Register_Ax_L, &acc_x[0], 1) != 0 ||
-        qmi_i2c_read(Qmi8658Register_Ax_H, &acc_x[1], 1) != 0 ||
-        qmi_i2c_read(Qmi8658Register_Ay_L, &acc_y[0], 1) != 0 ||
-        qmi_i2c_read(Qmi8658Register_Ay_H, &acc_y[1], 1) != 0 ||
-        qmi_i2c_read(Qmi8658Register_Az_L, &acc_z[0], 1) != 0 ||
-        qmi_i2c_read(Qmi8658Register_Az_H, &acc_z[1], 1))
+    if (qmi_i2c_read(Qmi8658Register_Ax_L, &acc[0], 6) != 0)
     {
         return -1;
     };
 
-    data_raw_acceleration[0] = (int16)((int16)acc_x[1] << 8 | acc_x[0]);
-    data_raw_acceleration[1] = (int16)((int16)acc_y[1] << 8 | acc_y[0]);
-    data_raw_acceleration[2] = (int16)((int16)acc_z[1] << 8 | acc_z[0]);
+    data_raw_acceleration[0] = (int16)((int16)acc[1] << 8 | acc[0]);
+    data_raw_acceleration[1] = (int16)((int16)acc[3] << 8 | acc[2]);
+    data_raw_acceleration[2] = (int16)((int16)acc[5] << 8 | acc[4]);
 
     // Kalman filter the data
     data_raw_acceleration[0] = Kalman_filter(&filterAccX, data_raw_acceleration[0], 0);
     data_raw_acceleration[1] = Kalman_filter(&filterAccY, data_raw_acceleration[1], 0);
     data_raw_acceleration[2] = Kalman_filter(&filterAccZ, data_raw_acceleration[2], 0);
 
-    // }
-    // lua_pushinteger(L, ready);
-    // lua_pushinteger(L, (int)(data_raw_acceleration[0]));
-    // lua_pushinteger(L, (int)(data_raw_acceleration[1]));
-    // lua_pushinteger(L, (int)(data_raw_acceleration[2]));
     return 0;
 }
 
@@ -275,16 +246,17 @@ int QMI8658_polling_acc(void *L)
     if ((status & 0x01) && (QMI8658_read_acc() == 0))
     {
         ready = 1;
+        acc_sum = sqrt(pow(data_raw_acceleration[0], 2) + pow(data_raw_acceleration[1], 2) + pow(data_raw_acceleration[2], 2));
+        acceleration_norm[0] = data_raw_acceleration[0] / acc_sum;
+        acceleration_norm[1] = data_raw_acceleration[1] / acc_sum;
+        acceleration_norm[2] = data_raw_acceleration[2] / acc_sum;
     }
 
     lua_pushinteger(L, ready);
     // lua_pushinteger(L, (int)(data_raw_acceleration[0]));
     // lua_pushinteger(L, (int)(data_raw_acceleration[1]));
     // lua_pushinteger(L, (int)(data_raw_acceleration[2]));
-    acc_sum = sqrt(pow(data_raw_acceleration[0], 2) + pow(data_raw_acceleration[1], 2) + pow(data_raw_acceleration[2], 2));
-    acceleration_norm[0] = data_raw_acceleration[0] / acc_sum;
-    acceleration_norm[1] = data_raw_acceleration[1] / acc_sum;
-    acceleration_norm[2] = data_raw_acceleration[2] / acc_sum;
+
 
     lua_pushinteger(L, (int)(acceleration_norm[0] * QMI8658_MAX_DIGITS));
     lua_pushinteger(L, (int)(acceleration_norm[1] * QMI8658_MAX_DIGITS));
@@ -303,19 +275,24 @@ int QMI8658_polling_z_tilt(void *L)
     if ((status & 0x01) && (QMI8658_read_acc() == 0))
     {
         ready = 1;
+
+        acceleration_tilt[0] = atan(data_raw_acceleration[0]/ \
+        sqrt(pow(data_raw_acceleration[1],2) + pow(data_raw_acceleration[2],2)));
+        acceleration_tilt[1] = atan(data_raw_acceleration[1]/ \
+        sqrt(pow(data_raw_acceleration[0],2) + pow(data_raw_acceleration[2],2)));
+        acceleration_tilt[2] = atan(
+        sqrt(pow(data_raw_acceleration[0],2) + pow(data_raw_acceleration[1],2))/ data_raw_acceleration[2]);
     }
 
     lua_pushinteger(L, ready);
-    // acc_sum = sqrt(pow(data_raw_acceleration[0], 2) + pow(data_raw_acceleration[1], 2) + pow(data_raw_acceleration[2], 2));
-    acceleration_tilt[0] = atan(data_raw_acceleration[0]/ \
-        sqrt(pow(data_raw_acceleration[1],2) + pow(data_raw_acceleration[2],2)));
-    acceleration_tilt[1] = atan(data_raw_acceleration[1]/ \
-        sqrt(pow(data_raw_acceleration[0],2) + pow(data_raw_acceleration[2],2)));
-    acceleration_tilt[2] = atan(
-        sqrt(pow(data_raw_acceleration[0],2) + pow(data_raw_acceleration[1],2))/ data_raw_acceleration[2]);
+    lua_Number acc_0 = acceleration_tilt[0];
+    lua_Number acc_1 = acceleration_tilt[1];
+    lua_Number acc_2 = acceleration_tilt[2];
 
-    lua_pushinteger(L, (int)(acceleration_tilt[0] * QMI8658_MAX_DIGITS));
-    lua_pushinteger(L, (int)(acceleration_tilt[1] * QMI8658_MAX_DIGITS));
-    lua_pushinteger(L, (int)(acceleration_tilt[2] * QMI8658_MAX_DIGITS));
+    lua_pushinteger(L, acceleration_tilt[0]*QMI8658_MAX_DIGITS);
+    lua_pushinteger(L, acceleration_tilt[1]*QMI8658_MAX_DIGITS);
+    lua_pushinteger(L, acceleration_tilt[2]*QMI8658_MAX_DIGITS);
+    // lua_pushnumber(L, 1.322321);
+
     return 4;
 }
