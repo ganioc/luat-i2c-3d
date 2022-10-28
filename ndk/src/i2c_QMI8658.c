@@ -210,6 +210,8 @@ int QMI8658_polling_begin(void *L)
     Kalman_init(&filterAccX, KALMAN_R, KALMAN_Q, KALMAN_A, KALMAN_B, KALMAN_C);
     Kalman_init(&filterAccY, KALMAN_R, KALMAN_Q, KALMAN_A, KALMAN_B, KALMAN_C);
     Kalman_init(&filterAccZ, KALMAN_R, KALMAN_Q, KALMAN_A, KALMAN_B, KALMAN_C);
+
+    lua_pushinteger(L, 1);
     return 1;
 }
 int QMI8658_read_acc()
@@ -291,8 +293,9 @@ int QMI8658_polling_z_tilt(void *L)
 
     lua_pushinteger(L, acceleration_tilt[0]*QMI8658_MAX_DIGITS);
     lua_pushinteger(L, acceleration_tilt[1]*QMI8658_MAX_DIGITS);
-    lua_pushinteger(L, acceleration_tilt[2]*QMI8658_MAX_DIGITS);
-    // lua_pushnumber(L, 1.322321);
+    // lua_pushinteger(L, acceleration_tilt[2]*QMI8658_MAX_DIGITS);
+    lua_pushnumber(L, acceleration_tilt[2]);
+    lua_pushnumber(L, 1.322321);
 
-    return 4;
+    return 5;
 }

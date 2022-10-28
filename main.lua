@@ -104,9 +104,9 @@ sys.taskInit(function()
 
             sys.wait(40)
 
-            local ready2,tiltx,tilty,tiltz = user.QMI8658_polling_z_tilt()
+            local ready2,tiltx,tilty,tiltz, num_appending = user.QMI8658_polling_z_tilt()
             if ready2 == 1 then
-                print("TILT:",tiltx,tilty,tiltz)
+                print("TILT:",tiltx,tilty,tiltz, num_appending)
             end
 
         end
