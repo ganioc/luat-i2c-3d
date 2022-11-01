@@ -241,10 +241,9 @@ int QMI8658_polling_z_tilt(void *L)
 
     lua_pushinteger(L, ready);
 
-    lua_pushinteger(L, acceleration_tilt[0]*QMI8658_MAX_DIGITS);
-    lua_pushnumber(L, acceleration_tilt[1]*QMI8658_MAX_DIGITS);
+    lua_pushnumber(L, acceleration_tilt[0]);
+    lua_pushnumber(L, acceleration_tilt[1]);
     lua_pushnumber(L, acceleration_tilt[2]);
-    lua_pushnumber(L, 1.322321);
 
-    return 5;
+    return 4;
 }
